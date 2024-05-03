@@ -28,7 +28,7 @@ const Random = () => {
 
   // Generate 37 random numbers and store them in the array
   for (let i = 0; i < 37; i++) {
-    randomNumbers.push(getRandomNumber(0, 36)); // Generate random numbers between 0 and 36
+    randomNumbers.push(getRandomNumber(0, 36)); 
   }
   // css={listStyles}
   return (

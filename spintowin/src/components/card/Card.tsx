@@ -18,108 +18,108 @@ const Card = () => {
             <ListStyles>
                     3
             </ListStyles>
-            <ListStyles>
+            <ListDark>
                     6
-            </ListStyles>
+            </ListDark>
             <ListStyles>
                     9
             </ListStyles>
             <ListStyles>
                     12
             </ListStyles>
-            <ListStyles>
+            <ListDark>
                     15
-            </ListStyles>
+            </ListDark>
             <ListStyles>
                     18
             </ListStyles>
             <ListStyles>
                     21
             </ListStyles>
-             <ListStyles>
+             <ListDark>
                     24
-            </ListStyles>
+            </ListDark>
             <ListStyles>
                     27
             </ListStyles>
             <ListStyles>
                     30
             </ListStyles>
-            <ListStyles>
+            <ListDark>
                     33
-            </ListStyles>
+            </ListDark>
             <ListStyles>
                     36
             </ListStyles>
-            <ListStyles>
+            <ListDark>
                     2
-            </ListStyles>
+            </ListDark>
             <ListStyles>
                     5
             </ListStyles>
-            <ListStyles>
+            <ListDark>
                     8
-            </ListStyles>
-            <ListStyles>
+            </ListDark>
+            <ListDark>
                     11
-            </ListStyles>
+            </ListDark>
             <ListStyles>
                     14
             </ListStyles>
-            <ListStyles>
+            <ListDark>
                     17
-            </ListStyles>
-            <ListStyles>
+            </ListDark>
+            <ListDark>
                     20
-            </ListStyles>
+            </ListDark>
              <ListStyles>
                     23
             </ListStyles>
-            <ListStyles>
+            <ListDark>
                     26
-            </ListStyles>
-            <ListStyles>
+            </ListDark>
+            <ListDark>
                     29
-            </ListStyles>
+            </ListDark>
             <ListStyles>
                     32
             </ListStyles>
-            <ListStyles>
+            <ListDark>
                     35
-            </ListStyles>
+            </ListDark>
             <ListStyles>
                     1
             </ListStyles>
-            <ListStyles>
+            <ListDark>
                     4
-            </ListStyles>
+            </ListDark>
             <ListStyles>
                     7
             </ListStyles>
-            <ListStyles>
+            <ListDark>
                     10
-            </ListStyles>
-            <ListStyles>
+            </ListDark>
+            <ListDark>
                     13
-            </ListStyles>
+            </ListDark>
             <ListStyles>
                     16
             </ListStyles>
             <ListStyles>
                     19
             </ListStyles>
-             <ListStyles>
+             <ListDark>
                     22
-            </ListStyles>
+            </ListDark>
             <ListStyles>
                     25
             </ListStyles>
-            <ListStyles>
+            <ListDark>
                     28
-            </ListStyles>
-            <ListStyles>
+            </ListDark>
+            <ListDark>
                     31
-            </ListStyles>
+            </ListDark>
             <ListStyles>
                     34
             </ListStyles>
@@ -183,9 +183,29 @@ const ListStyles = styled.li`
   margin-left:0px;
   &:hover {
     border:2px solid yellow;
+    background-color:#A9A9A9;
+  }
+`;
+
+const ListDark = styled.li`
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color:white;
+  margin:0px;
+  width :50px;
+  height: 50px;
+  background-color:black;
+  font-size: 20px;
+  list-style:none;
+  border: 2px solid white;
+  margin-left:0px;
+  &:hover {
+    border:2px solid yellow;
     background-color:gray;
   }
 `;
+
 const ContainerStyles = styled.ul`
   font-family: Arial, sans-serif;
   display:flex;
@@ -199,6 +219,7 @@ const ContainerStyles = styled.ul`
   padding:0px;
   margin-left:0px;
 `;
+
 // const DivStyles = styled.div`
 // display:flex;
 // align-items:center;
@@ -218,7 +239,7 @@ const ListItems = styled.li`
   border: 2px solid white;
   &:hover {
     border:2px solid yellow;
-    background-color:light-gray;
+    background-color:#A9A9A9;
 
   }
 `;
@@ -240,6 +261,7 @@ const ZeroItem = styled.li`
   border: 2px solid white;
   &:hover {
     border:2px solid yellow;
+    background-color:#A9A9A9;
   }
 `;
 const CardContainer = styled.div`
@@ -277,6 +299,7 @@ const NumberItems = styled.li`
   border: 2px solid white;
   &:hover {
     border:2px solid yellow;
+    background-color:#A9A9A9;
   }
 `
 // Styled button component

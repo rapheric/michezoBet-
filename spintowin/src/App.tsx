@@ -2,12 +2,15 @@ import React from 'react';
 import Card from './components/card/Card';
 import Navbar from './components/aside/Nav';
 import styled from '@emotion/styled';
-
+import Stake from './components/stake/Stake';
+import Footer from './components/footer/Footer';
 const App = () => {
  return (
   <AppContainer>
     <Navbar/>
     <Card/>
+    <Stake/>
+    <Footer/>
   </AppContainer>
   );
 };

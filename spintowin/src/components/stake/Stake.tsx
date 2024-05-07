@@ -41,7 +41,7 @@ const Button = styled.button`
   font-family: Roboto;
   font-size: 16px;
   text-transform: initial;
-  background-color:orange;
+  background-color:	#FFE5B4;
 
 `;
 const StakeBalance = styled.div`
@@ -150,7 +150,7 @@ const Stake: React.FC = () => {
         <Span>KSh200</Span>
       </InnerDiv>
       <InnerDiv>
-        <ChildDiv />
+        <ChildDiv></ChildDiv>
         <Span>KSh100</Span>
       </InnerDiv>
       <InnerDiv>

@@ -1,15 +1,16 @@
 import React from 'react';
-import Card from './components/card/Card';
 import Navbar from './components/aside/Nav';
 import styled from '@emotion/styled';
-import Stake from './components/stake/Stake';
 import Footer from './components/footer/Footer';
+import Stats from './components/statistics/Stats';
+// import Randon from './components/Rand/Randon';
+import Card from './components/card/Card';
 const App = () => {
  return (
   <AppContainer>
     <Navbar/>
+    <Stats/>
     <Card/>
-    <Stake/>
     <Footer/>
   </AppContainer>
   );

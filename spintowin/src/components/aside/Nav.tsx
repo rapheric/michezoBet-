@@ -17,15 +17,15 @@ const Navbar: React.FC = () => {
          <ChildDiv />
        </ParentDiv>
       </NavItem>
-      <NavItem>
-         <ParentDiv>
+      <NavItems>
+         <ParentDivs>
            <ChildDiv />
            <ChildDiv />
            <ChildDiv />
            <ChildDiv />
            <ChildDiv />
-         </ParentDiv>
-      </NavItem>
+         </ParentDivs>
+      </NavItems>
     </DivContainer>
    </NavbarContainer>
   );
@@ -44,24 +44,40 @@ const NavbarContainer = styled.nav`
   margin-top:0px;
 `;
 
-const NavItem = styled.div`
+const NavItems = styled.div`
   cursor: pointer;
   padding: 5px 10px;
   border-radius: 5px;
-  background-color: #F06543;
+  background-color: blue;
   transition: background-color 0.3s ease;
   &:hover {
     background-color: #F06543;
   }
+`;
+const NavItem = styled.div`
+  cursor: pointer;
+  padding: 5px 10px;
+  border-radius: 5px;
+  background-color: #F06543 ;
+  transition: background-color 0.3s ease;
+  &:hover {
+    background-color: #F06543;
+  }
+`;
+const ParentDivs = styled.div`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 35px;
+  background-color: light blue;
 `;
 const ParentDiv = styled.div`
   display: flex;
   justify-content: center;
   align-items: center;
   height: 35px;
-  background-color: #F06543;
+  background-color:  #F06543;
 `;
-
 const ChildDiv = styled.div`
   width: 20px;
   height: 20px;

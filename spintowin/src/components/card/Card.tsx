@@ -4,159 +4,338 @@ import {  faArrowRotateRight, faRotateLeft ,faTrashCan} from '@fortawesome/free-
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
 const Card = () => {
-        const [result, setResult] = useState<number | null>(null);
-        const [selectedOption, setselectedOption] = useState<boolean>(false);
         const [betAmount, setBetAmount] = useState<number>(0);
-        const [outcome, setOutcome] = useState<'win' | 'lose' | null>(null);
+        const [placedBetAmount, setPlacedBetAmount] = useState<number>(0);
+        const [selectedOption, setSelectedOption] = useState<string | null>(null);
+        const [randomNumber, setRandomNumber] = useState<number | null>(null);
+        const [result, setResult] = useState<'win' | 'lose' | null>(null);
 
-        // Function to handle the spin button click
-        const handleSpin = () => {
-        // Generate a random number between 0 and 36
-        const randomNumber = Math.floor(Math.random() * 37);
-    
-        // Determine the outcome based on the random number and the selected bet amount
-        if (randomNumber === result) {
-          setOutcome('win');
-        } else{
-          setOutcome('lose');
-        }
-        setResult(randomNumber);
-      };
-      const handleClick = () => {
-        setselectedOption(!selectedOption);
-        alert("selected")
-      };
 
-    
+        // const handleSelectNumber = (number: number) => {
+        //         if (selectedNumbers.includes(number)) {
+        //           setSelectedNumbers(selectedNumbers.filter(n => n !== number));
+        //         } else {
+        //           setSelectedNumbers([...selectedNumbers, number]);
+        //         }
+        //       };
+            
+              // Function to handle option selection (even, odd, low, high)
+            //  
+            // const handleSelectOption = (selectedOption: string) => {
+            //     console.log('Selected option:', selectedOption);
+            
+            //     // You can perform any actions based on the selected option here
+            //   };
+             // Function to handle option selection (even, odd, low, high)
+             const handleSelectOption = (option: string) => {
+                setSelectedOption(option);
+              };
+            
+            
+              // Function to handle spin button click
+              const handleSpin = () => {
+                // Generate a random number between 0 and 36
+                const randomNumber = Math.floor(Math.random() * 37);
+                setRandomNumber(randomNumber);
+            
+                // Determine if the user has won or lost based on the selected numbers, option, and generated random number
+        let hasWon = false;
+        switch (selectedOption) {
+        case '2':
+                hasWon = randomNumber ===2;
+                break;      
+        case '3':
+                hasWon = randomNumber ===3;
+                break;
+        case '4':
+                hasWon = randomNumber ===4;
+                break;
+        case '5':
+                hasWon = randomNumber ===5;
+                break;
+        case '6':
+                hasWon = randomNumber ===6;
+                break;
+        case '7':
+                hasWon = randomNumber ===7;
+                break;
+        case '8':
+                hasWon = randomNumber ===8;
+                break;
+        case '9':
+                hasWon = randomNumber ===9;
+                break;
+        case '10':
+                hasWon = randomNumber ===10;
+                break;
+        case '11':
+                hasWon = randomNumber ===11;
+                break;
+        case '12':
+                hasWon = randomNumber ===12;
+                break;
+        case '13':
+                hasWon = randomNumber ===13;
+                break;
+        case '14':
+                hasWon = randomNumber ===14;
+                break;
+        case '15':
+                hasWon = randomNumber ===15;
+                break;
+        case '16':
+                hasWon = randomNumber ===16;
+                break;
+        case '17':
+                hasWon = randomNumber ===17;
+                break;
+        case '18':
+                hasWon = randomNumber ===18;
+                break;
+        case '19':
+                hasWon = randomNumber ===190;
+                break;
+        case '20':
+                hasWon = randomNumber ===20;
+                break;
+        case '21':
+                hasWon = randomNumber ===21;
+                break;
+        case '22':
+                hasWon = randomNumber ===22;
+                break;
+        case '23':
+                hasWon = randomNumber ===23;
+                break;
+        case '24':
+                hasWon = randomNumber ===24;
+                break;
+        case '25':
+                hasWon = randomNumber ===25;
+                break;
+        case '26':
+                hasWon = randomNumber ===26;
+                break;
+        case '27':
+                hasWon = randomNumber ===27;
+                break;
+        case '28':
+                hasWon = randomNumber ===28;
+                break;
+        case '29':
+                hasWon = randomNumber ===29;
+                break;
+        case '30':
+                hasWon = randomNumber ===30;
+                break;
+        case '31':
+                hasWon = randomNumber ===31;
+                break;
+        case '32':
+                hasWon = randomNumber ===32;
+                break;
+        case '33':
+                hasWon = randomNumber ===33;
+                break;
+        case '34':
+                hasWon = randomNumber ===34;
+                break;
+        case '35':
+                hasWon = randomNumber ===33;
+                break;
+        case '36':
+                hasWon = randomNumber ===34;
+                break;
+        case 'even':
+                hasWon = randomNumber % 2 === 0;
+                break;
+        case 'odd':
+                hasWon = randomNumber % 2 !== 0;
+                break;
+        case 'low':
+                hasWon = randomNumber ===1;
+                break;
+        case 'high':
+                hasWon = randomNumber ===36;
+                break;
+        case 'zero':
+                hasWon = randomNumber ===0;
+                break;
+        case 'range12':
+                hasWon = randomNumber >= 1 && randomNumber <= 12;;
+                break;
+        case 'range1324':
+                hasWon = randomNumber >= 13 && randomNumber <= 24;;
+                break;
+        case 'range2536':
+                hasWon = randomNumber >= 25 && randomNumber <= 36;;
+                break;
+                }
+                setResult(hasWon ? 'win' : 'lose');
+              };
+            
+              // Calculate payout based on the bet amount
+              const calculatePayout = (): number => {
+                return result === 'win' ? betAmount * 36 : 0;
+              };
+            
+    const handleSelectedFisrt = () =>{
+        handleSelectOption('range12')
+        setPlacedBetAmount(placedBetAmount+betAmount)
+    }
+    const handleSelectedSecond = () =>{
+        handleSelectOption('range1324')
+        setPlacedBetAmount(placedBetAmount+betAmount)
+    }
+    const handleSelectedThird = () =>{
+        handleSelectOption('range2536')
+        setPlacedBetAmount(placedBetAmount+betAmount)
+    }
+    const handleSelectedLow = () =>{
+        handleSelectOption('low')
+        setPlacedBetAmount(placedBetAmount+betAmount)
+    }
+    const handleSelectedEven = () =>{
+        handleSelectOption('even')
+        setPlacedBetAmount(placedBetAmount+betAmount)
+    }
+    const handleSelectedOdd = () =>{
+        handleSelectOption('odd')
+        setPlacedBetAmount(placedBetAmount+betAmount)
+    }
+    const handleSelectedHigh = () =>{
+        handleSelectOption('high')
+        setPlacedBetAmount(placedBetAmount+betAmount)
+    }
   return (
         <>
     <CardWrapper>
     <CardContainer>
         <div>
-        <ZeroItem onClick={handleClick}>
-          0{selectedOption}
+        <ZeroItem >
+          0
          </ZeroItem>
         </div>
     <div>
         <ContainerStyles>
-            <ListStyles onClick={handleClick} >
-                    3{selectedOption}
+            <ListStyles  onClick={() => handleSelectOption('3')}>
+                    3
            </ListStyles>
-            <ListDark onClick={handleClick}>
-                    6{selectedOption}
+            <ListDark onClick={() => handleSelectOption('6')} >
+                    6
             </ListDark>
-            <ListStyles onClick={handleClick}>
-                    9{selectedOption}
+            <ListStyles onClick={() => handleSelectOption('9')} >
+                    9
             </ListStyles>
-            <ListStyles onClick={handleClick}>
-                    12{selectedOption}
+            <ListStyles onClick={() => handleSelectOption('12')} >
+                    12
             </ListStyles>
-            <ListDark onClick={handleClick}>
-                    15{selectedOption}
+            <ListDark onClick={() => handleSelectOption('15')} >
+                    15
             </ListDark>
-            <ListStyles onClick={handleClick}>
-                    18{selectedOption}
+            <ListStyles onClick={() => handleSelectOption('18')}>
+                    18
             </ListStyles>
-            <ListStyles onClick={handleClick}>
-                    21{selectedOption}
+            <ListStyles onClick={() => handleSelectOption('21')} >
+                    21
             </ListStyles>
-             <ListDark onClick={handleClick}>
-                    24{selectedOption}
+             <ListDark onClick={() => handleSelectOption('24')}>
+                    24
             </ListDark>
-            <ListStyles onClick={handleClick}>
-                    27{selectedOption}
+            <ListStyles onClick={() => handleSelectOption('27')}>
+                    27
             </ListStyles>
-            <ListStyles onClick={handleClick}>
-                    30{selectedOption}
+            <ListStyles onClick={() => handleSelectOption('2')}>
+                    30
             </ListStyles>
-            <ListDark onClick={handleClick}>
-                    33{selectedOption}
+            <ListDark onClick={() => handleSelectOption('33')}>
+                    33
             </ListDark>
-            <ListStyles onClick={handleClick}>
-                    36{selectedOption}
+            <ListStyles onClick={() => handleSelectOption('36')} >
+                    36
             </ListStyles>
-            <ListDark onClick={handleClick}>
-                    2{selectedOption}
+            <ListDark onClick={() => handleSelectOption('2')}>
+                    2
             </ListDark>
-            <ListStyles onClick={handleClick}>
-                    5{selectedOption}
+            <ListStyles onClick={() => handleSelectOption('5')}>
+                    5
             </ListStyles>
-            <ListDark onClick={handleClick}>
-                    8{selectedOption}
+            <ListDark onClick={() => handleSelectOption('8')} >
+                    8
             </ListDark>
-            <ListDark onClick={handleClick}>
-                    11{selectedOption}
+            <ListDark onClick={() => handleSelectOption('11')} >
+                    11
             </ListDark>
-            <ListStyles onClick={handleClick}>
-                    14{selectedOption}
+            <ListStyles onClick={() => handleSelectOption('14')} >
+                    14
             </ListStyles>
-            <ListDark onClick={handleClick}>
-                    17{selectedOption}
+            <ListDark onClick={() => handleSelectOption('17')}>
+                    17
             </ListDark>
-            <ListDark onClick={handleClick}>
-                    20{selectedOption}
+            <ListDark onClick={() => handleSelectOption('20')} >
+                    20
             </ListDark>
-             <ListStyles onClick={handleClick}>
-                    23{selectedOption}
+             <ListStyles onClick={() => handleSelectOption('23')} >
+                    23
             </ListStyles>
-            <ListDark onClick={handleClick}>
-                    26{selectedOption}
+            <ListDark onClick={() => handleSelectOption('26')} >
+                    26
             </ListDark>
-            <ListDark onClick={handleClick}>
-                    29{selectedOption}
+            <ListDark onClick={() => handleSelectOption('29')} >
+                    29
             </ListDark>
-            <ListStyles onClick={handleClick}>
-                    32{selectedOption}
+            <ListStyles  onClick={() => handleSelectOption('32')}>
+                    32
             </ListStyles>
-            <ListDark onClick={handleClick}>
-                    35{selectedOption}
+            <ListDark onClick={() => handleSelectOption('35')}>
+                    35
             </ListDark>
-            <ListStyles onClick={handleClick}>
-                    1{selectedOption}
+            <ListStyles onClick={() => handleSelectOption('1')} >
+                    1
             </ListStyles>
-            <ListDark onClick={handleClick}>
-                    4{selectedOption}
+            <ListDark onClick={() => handleSelectOption('4')} >
+                    4
             </ListDark>
-            <ListStyles onClick={handleClick}>
-                    7{selectedOption}
+            <ListStyles onClick={() => handleSelectOption('7')}>
+                    7
             </ListStyles>
-            <ListDark onClick={handleClick}>
-                    10{selectedOption}
+            <ListDark onClick={() => handleSelectOption('10')}>
+                    10
             </ListDark>
-            <ListDark onClick={handleClick}>
-                    13{selectedOption}
+            <ListDark onClick={() => handleSelectOption('13')} >
+                    13
             </ListDark>
-            <ListStyles onClick={handleClick}>
-                    16{selectedOption}
+            <ListStyles onClick={() => handleSelectOption('16')} >
+                    16
             </ListStyles>
-            <ListStyles onClick={handleClick}>
-                    19{selectedOption}
+            <ListStyles onClick={() => handleSelectOption('19')} >
+                    19
             </ListStyles>
-             <ListDark onClick={handleClick}>
-                    22{selectedOption}
+             <ListDark  onClick={() => handleSelectOption('22')}>
+                    22
             </ListDark>
-            <ListStyles onClick={handleClick}>
-                    25{selectedOption}
+            <ListStyles onClick={() => handleSelectOption('25')}>
+                    25
             </ListStyles>
-            <ListDark onClick={handleClick}>
-                    28{selectedOption}
+            <ListDark onClick={() => handleSelectOption('28')} >
+                    28
             </ListDark>
-            <ListDark onClick={handleClick}>
-                    31{selectedOption}
+            <ListDark onClick={() => handleSelectOption('31')}>
+                    31
             </ListDark>
-            <ListStyles onClick={handleClick}>
-                    34{selectedOption}
+            <ListStyles onClick={() => handleSelectOption('34')} >
+                    34
             </ListStyles>
         </ContainerStyles>
         <ContainerStyles>
-            <ListItems onClick={handleClick}>
-                1 ~ 12 {selectedOption}
+            <ListItems onClick={handleSelectedFisrt}>
+                1 ~ 12 
             </ListItems>
-            <ListItems onClick={handleClick}>
-                13 ~ 24{selectedOption}
+            <ListItems onClick={handleSelectedSecond}>
+                13 ~ 24
             </ListItems>
-            <ListItems onClick={handleClick}>
-                25 ~ 36{selectedOption}
+            <ListItems  onClick={handleSelectedThird}>
+                25 ~ 36
             </ListItems>
         </ContainerStyles>
     </div>
@@ -169,23 +348,23 @@ const Card = () => {
     </CardContainer>
     <div>
     <ContainerStyles>
-            <NumberItems onClick={handleClick}>
-                LOW{selectedOption}
+            <NumberItems   onClick={handleSelectedLow}>
+                LOW
             </NumberItems>
-            <NumberItems onClick={handleClick}>
-                EVEN{selectedOption}
+            <NumberItems   onClick={handleSelectedEven}>
+                EVEN
             </NumberItems>
-            <NumberItems onClick={handleClick}>
+            <NumberItems >
                 
             </NumberItems>
-            <NumberItems onClick={handleClick}>
-            {selectedOption}
+            <NumberItems >
+            
             </NumberItems>
-            <NumberItems onClick={handleClick}>
-                ODD{selectedOption}
+            <NumberItems  onClick={handleSelectedOdd}>
+                ODD
             </NumberItems>
-            <NumberItems onClick={handleClick}>
-                HIGH{selectedOption}
+            <NumberItems   onClick={handleSelectedHigh} >
+                HIGH
             </NumberItems>
         </ContainerStyles>
     </div>
@@ -195,8 +374,16 @@ const Card = () => {
      <FooterContainer>
      <div>
     <StakeBalance>
+     <BalanceTitle>CREDIT</BalanceTitle>
+     <BalanceAmount>KSh0</BalanceAmount>
+    </StakeBalance>
+    <StakeBalance>
      <BalanceTitle>TOTAL BET</BalanceTitle>
-     <BalanceAmount>KSh{betAmount}</BalanceAmount>
+     <BalanceAmount>KSh{placedBetAmount}</BalanceAmount>
+    </StakeBalance>
+    <StakeBalance>
+     <BalanceTitle>WIN</BalanceTitle>
+     <BalanceAmount>KSh{calculatePayout()}</BalanceAmount>
     </StakeBalance>
     </div>
   <RightDiv>
@@ -204,49 +391,55 @@ const Card = () => {
     <OuterDiv>
    <InnerDiv>
    <ChildDiv 
-           onClick={() => setBetAmount(Number(betAmount === 0?"500":betAmount+500))}>
+           onClick={() => setBetAmount(Number(500))}>
       </ChildDiv>
      <Span>KSh500</Span>
    </InnerDiv>
    <InnerDiv>
    <ChildDiv 
-           onClick={() => setBetAmount(Number(betAmount === 0?"400":betAmount+400))}>
+           onClick={() => setBetAmount(Number(400))}>
       </ChildDiv>
      <Span>KSh400</Span>
    </InnerDiv>
    <InnerDiv>
    <ChildDiv 
-           onClick={() => setBetAmount(Number(betAmount === 0?"200":betAmount+200))}>
+           onClick={() => setBetAmount(Number(200))}>
       </ChildDiv>
      <Span>KSh200</Span>
    </InnerDiv>
    <InnerDiv>
    <ChildDiv 
-           onClick={() => setBetAmount(Number(betAmount === 0?"100":betAmount+100))}>
+           onClick={() => setBetAmount(Number(100))}
+           >
       </ChildDiv>
      <Span>KSh100</Span>
    </InnerDiv>
    <InnerDiv>
    <ChildDiv 
-           onClick={() => setBetAmount(Number(betAmount === 0?"50":betAmount+50))}>
+           onClick={() => setBetAmount(Number(50))}>
       </ChildDiv>
      <Span>KSh50</Span>
    </InnerDiv>
    <InnerDiv>
      <ChildDiv 
-           onClick={() => setBetAmount(Number(betAmount === 0?"10":betAmount+10))}>
+           onClick={() => setBetAmount(Number(10))}>
       </ChildDiv>
    <Span>KSh10</Span>
    </InnerDiv>
  </OuterDiv>
  </ActionDiv>
    <ButtonDiv>
-     <Button onClick={handleSpin}>Place your bet{outcome}</Button>
+     <Button onClick={handleSpin}>
+        {randomNumber !== null && (
+        <p>
+          {result === 'win' ? 'Congratulations! You win!' : 'Sorry, you lose!'}{randomNumber}
+        </p>
+      )}
+     </Button>
    </ButtonDiv>
    </RightDiv>
  </FooterContainer>
  </div>
- 
  </>
   )
 }
@@ -386,14 +579,15 @@ const NumberItems = styled.li`
 `
 // Styled button component
 const StyledButton = styled.button`
-  padding: 10px 10px;
+  padding: 12px 12px;
+  font-weight:bold;
   margin: 5px;
   border: none;
   border-radius: 50%;
-  font-size: 11px;
+  font-size: 13px;
   cursor: pointer;
   background-color:#AD5765 ;
-  color:#D6A0A9;
+  color:white;
   &:hover {
     background-color: #F4E5E8;
   }
@@ -433,7 +627,7 @@ const Button = styled.button`
   cursor: pointer;
   width: 180px;
   height: 60px;
-  color: #fff;
+  color: black;
   border-radius: 3px;
   -webkit-box-shadow: 0 6px 6px 0 rgba(0, 0, 0, .5);
   font-family: Roboto;
@@ -520,8 +714,6 @@ display:flex;
 gap:30px;
 `
 const ButtonDiv = styled.div`
-
 `
-
 
 export default Card

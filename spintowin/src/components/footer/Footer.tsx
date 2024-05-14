@@ -16,6 +16,7 @@ const OuterDiv = styled.div`
   font-size: 13px;
   background-color: #013b93;
   color:white;
+  margin-bottom:0px;
 `;
 
 const FirstCol = styled.div`

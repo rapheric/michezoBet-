@@ -1,59 +1,59 @@
-import React from 'react';
-import styled from '@emotion/styled';
+import React, { useState } from "react";
 
-const OuterDiv = styled.div`
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 20px;
-`;
+interface Bet {
+  option: string;
+  amount: number;
+}
 
-const InnerDiv = styled.div`
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-`;
+const UndoRedoExample: React.FC = () => {
+  const [selectedBets, setSelectedBets] = useState<Bet[]>([]);
+  const [undoStack, setUndoStack] = useState<Bet[][]>([]);
+  const [redoStack, setRedoStack] = useState<Bet[][]>([]);
 
-const Image = styled.img`
-  width: 50px;
-  height: 50px;
-  border-radius: 50%;
-  margin-bottom: 10px;
-`;
+  const addBet = (option: string, amount: number) => {
+    const newBet: Bet = { option, amount };
+    setSelectedBets([...selectedBets, newBet]);
+    setUndoStack([...undoStack, [...selectedBets]]);
+    setRedoStack([]);
+  };
 
-const Span = styled.span`
-  font-weight: bold;
-`;
+  const undo = () => {
+    if (undoStack.length > 0) {
+      const prevBets = undoStack.pop() as Bet[];
+      setRedoStack([...redoStack, [...selectedBets]]);
+      setSelectedBets(prevBets);
+    }
+  };
 
-const Place: React.FC = () => {
+  const redo = () => {
+    if (redoStack.length > 0) {
+      const nextBets = redoStack.pop() as Bet[];
+      setUndoStack([...undoStack, [...selectedBets]]);
+      setSelectedBets(nextBets);
+    }
+  };
+
   return (
-    <OuterDiv>
-      <InnerDiv>
-        <Image src="image1.jpg" alt="Image 1" />
-        <Span>Text 1</Span>
-      </InnerDiv>
-      <InnerDiv>
-        <Image src="image2.jpg" alt="Image 2" />
-        <Span>Text 2</Span>
-      </InnerDiv>
-      <InnerDiv>
-        <Image src="image3.jpg" alt="Image 3" />
-        <Span>Text 3</Span>
-      </InnerDiv>
-      <InnerDiv>
-        <Image src="image4.jpg" alt="Image 4" />
-        <Span>Text 4</Span>
-      </InnerDiv>
-      <InnerDiv>
-        <Image src="image5.jpg" alt="Image 5" />
-        <Span>Text 5</Span>
-      </InnerDiv>
-      <InnerDiv>
-        <Image src="image6.jpg" alt="Image 6" />
-        <Span>Text 6</Span>
-      </InnerDiv>
-    </OuterDiv>
+    <div>
+      <label htmlFor="options">Select Options:</label>
+      <select id="options">
+        <option value="option1">Option 1</option>
+        <option value="option2">Option 2</option>
+        <option value="option3">Option 3</option>
+      </select>
+      <input type="number" id="betAmount" placeholder="Enter Bet Amount" />
+      <button onClick={() => addBet("selectedOption", 10)}>Add Bet</button>
+      <button onClick={undo}>Undo</button>
+      <button onClick={redo}>Redo</button>
+      <div>
+        {selectedBets.map((bet, index) => (
+          <div key={index}>
+            {bet.option} - ${bet.amount}
+          </div>
+        ))}
+      </div>
+    </div>
   );
 };
 
-export default Place;
+export default UndoRedoExample;

@@ -6,9 +6,9 @@ import styled from '@emotion/styled';
 const Navbar: React.FC = () => {
   return (
     <NavbarContainer>
-      <NavItem>Statistics are not available yet.</NavItem>
+      <NavItemThree>Statistics are not available yet.</NavItemThree>
      <DivContainer>
-      <NavItem>
+      <NavItemThree>
        <ParentDiv>
          <ChildDiv />
          <ChildDiv />
@@ -16,8 +16,8 @@ const Navbar: React.FC = () => {
          <ChildDiv />
          <ChildDiv />
        </ParentDiv>
-      </NavItem>
-      <NavItems>
+      </NavItemThree>
+      <NavItemTwo>
          <ParentDivs>
            <ChildDiv />
            <ChildDiv />
@@ -25,7 +25,7 @@ const Navbar: React.FC = () => {
            <ChildDiv />
            <ChildDiv />
          </ParentDivs>
-      </NavItems>
+      </NavItemTwo>
     </DivContainer>
    </NavbarContainer>
   );
@@ -34,17 +34,20 @@ const NavbarContainer = styled.nav`
   display: flex;
   justify-content: space-between;
   align-items: center;
-  background-color:rgb(128,0,0);
+  background-color:brown;
   color: #fff;
   padding: 2px 2px;
   width:100%;
   max-width:920px;
-  height:45px;
+  max-height:42px;
+  height:100%;
   margin-bottom:30px;
   margin-top:0px;
+  box-shadow:border-box;
+  border:1px solid gray;
 `;
 
-const NavItems = styled.div`
+const NavItemTwo = styled.div`
   cursor: pointer;
   padding: 5px 10px;
   border-radius: 5px;
@@ -54,7 +57,7 @@ const NavItems = styled.div`
     background-color: #F06543;
   }
 `;
-const NavItem = styled.div`
+const NavItemThree = styled.div`
   cursor: pointer;
   padding: 5px 10px;
   border-radius: 5px;

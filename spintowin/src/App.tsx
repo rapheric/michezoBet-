@@ -5,10 +5,12 @@ import Footer from './components/footer/Footer';
 import Stats from './components/statistics/Stats';
 // import Randon from './components/Rand/Randon';
 import Card from './components/card/Card';
+import UndoRedoExample from './components/div/Place';
 const App = () => {
  return (
   <AppContainer>
     <Navbar/>
+    <UndoRedoExample/>
     <Stats/>
     <Card/>
     <Footer/>
@@ -20,7 +22,7 @@ const AppContainer = styled.div`
   margin: 0 auto;
   padding: 20px;
   background-color:brown;
-  height:600px;
+  height:550px;
   border:1px solid gray;
 `;
 

@@ -3,38 +3,33 @@ import styled from '@emotion/styled';
 import {  faArrowRotateRight, faRotateLeft ,faTrashCan} from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
+// interface Bet {
+//         option: string;
+//       }
+      
+interface PlacedBet {
+        Option: string;
+        BetAmounts: number;
+}
+
+
 const Card = () => {
-        const [betAmount, setBetAmount] = useState<number>(0);
+        const [betAmount, setBetAmount] = useState<number>(10);
+        const [chipAmount, setChipAmount] = useState<number>(0);
         const [placedBetAmount, setPlacedBetAmount] = useState<number>(0);
         const [selectedOption, setSelectedOption] = useState<string | null>(null);
         const [randomNumber, setRandomNumber] = useState<number | null>(null);
         const [result, setResult] = useState<'win' | 'lose' | null>(null);
-
-
-        // const handleSelectNumber = (number: number) => {
-        //         if (selectedNumbers.includes(number)) {
-        //           setSelectedNumbers(selectedNumbers.filter(n => n !== number));
-        //         } else {
-        //           setSelectedNumbers([...selectedNumbers, number]);
-        //         }
-        //       };
-            
-              // Function to handle option selection (even, odd, low, high)
-            //  
-            // const handleSelectOption = (selectedOption: string) => {
-            //     console.log('Selected option:', selectedOption);
-            
-            //     // You can perform any actions based on the selected option here
-            //   };
-             // Function to handle option selection (even, odd, low, high)
+        // const [selectedBets, setSelectedBets] = useState<Bet[]>([]);
+        const [undoStack, setUndoStack] = useState<PlacedBet[]>([]);
+        // const [redoStack, setRedoStack] = useState<Bet[][]>([]);
+        const [placedBets, setPlacedBets] = useState<PlacedBet[]>([])
+      
              const handleSelectOption = (option: string) => {
                 setSelectedOption(option);
               };
-            
-            
-              // Function to handle spin button click
-              const handleSpin = () => {
-                // Generate a random number between 0 and 36
+              const handleSpin = (e:any) => {
+                e.preventDefault();
                 const randomNumber = Math.floor(Math.random() * 37);
                 setRandomNumber(randomNumber);
             
@@ -93,7 +88,7 @@ const Card = () => {
                 hasWon = randomNumber ===18;
                 break;
         case '19':
-                hasWon = randomNumber ===190;
+                hasWon = randomNumber ===19;
                 break;
         case '20':
                 hasWon = randomNumber ===20;
@@ -174,196 +169,245 @@ const Card = () => {
                 setResult(hasWon ? 'win' : 'lose');
               };
             
-              // Calculate payout based on the bet amount
+        //       Calculate payout based on the bet amount
               const calculatePayout = (): number => {
-                return result === 'win' ? betAmount * 36 : 0;
+                let odd2: Array<string | null> = ['even', 'odd', 'black', 'red'];
+                let odd3: Array<string | null> = ['range12', 'range1324', 'range2536'];
+                 let odd36: Array<string | null> = ['zero', '1', '2', '3','4','5','6','7','8','9','10','11','12',
+                        '13', '14', '15', '16','17','18','19','20','21','22','23','24','25',
+                        '26', '27', '28', '29','30','31','32','33','34','35','36']
+
+                return   result === 'win' && odd2.includes(selectedOption) ? chipAmount * 2:
+                result === 'win' && odd3.includes(selectedOption) ? chipAmount * 3:
+                result === 'win' && odd36.includes(selectedOption) ? chipAmount * 36:
+               0;
+        }
+
+        const setPlacedAmont = ()=>{
+                let amount = 0;
+                placedBets.forEach(x=> {
+                        amount += x.BetAmounts;
+                });
+
+                setPlacedBetAmount(amount)
+        }
+       
+        const handleSelected = (option:string ) =>{
+                handleSelectOption(option)
+                setChipAmount(placedBetAmount)
+        // let selectedindex = placedBets.findIndex(x=> x.Option === option);
+        // if(selectedindex != -1){
+        //         placedBets[selectedindex].BetAmounts.push(betAmount);
+        // }
+        // else{
+        placedBets.push({
+                Option: option,
+                BetAmounts: betAmount
+        });
+        //}
+
+        setPlacedAmont();
+        console.log(placedBets);
+        
+
+        // const newBet: Bet = {option};
+        // setSelectedBets([...selectedBets, newBet]);
+        // setUndoStack([...undoStack, [...selectedBets]]);
+        // setRedoStack([]);
+        // handleSelectOption(option)
+        // setPlacedBetAmount(placedBetAmount+betAmount)
+            };
+
+            const deleteSelected = () =>{
+                setSelectedOption(null)
+                setPlacedBetAmount(0)
+                setBetAmount(10)
+                setRandomNumber(null)
+                setPlacedBets([])
+                setUndoStack([])
+                setResult(null)
+           };
+        
+        const handleDouble = () =>{
+        setPlacedBetAmount(placedBetAmount*2)
+            }
+            
+            const undo = () => {
+                if(placedBets.length > 0){
+                        let removed = placedBets.pop() as PlacedBet;
+                        undoStack.push(removed);
+                        setPlacedAmont();
+                }
+
+                console.log(placedBets);
+                
               };
             
-    const handleSelectedFisrt = () =>{
-        handleSelectOption('range12')
-        setPlacedBetAmount(placedBetAmount+betAmount)
-    }
-    const handleSelectedSecond = () =>{
-        handleSelectOption('range1324')
-        setPlacedBetAmount(placedBetAmount+betAmount)
-    }
-    const handleSelectedThird = () =>{
-        handleSelectOption('range2536')
-        setPlacedBetAmount(placedBetAmount+betAmount)
-    }
-    const handleSelectedLow = () =>{
-        handleSelectOption('low')
-        setPlacedBetAmount(placedBetAmount+betAmount)
-    }
-    const handleSelectedEven = () =>{
-        handleSelectOption('even')
-        setPlacedBetAmount(placedBetAmount+betAmount)
-    }
-    const handleSelectedOdd = () =>{
-        handleSelectOption('odd')
-        setPlacedBetAmount(placedBetAmount+betAmount)
-    }
-    const handleSelectedHigh = () =>{
-        handleSelectOption('high')
-        setPlacedBetAmount(placedBetAmount+betAmount)
-    }
+              const redo = () => {
+                if (undoStack.length > 0) {
+                  const nextBets = undoStack.pop() as PlacedBet;
+                 placedBets.push(nextBets);
+                 setPlacedAmont();
+                }
+                console.log(placedBets);
+              };
   return (
         <>
     <CardWrapper>
     <CardContainer>
         <div>
-        <ZeroItem >
+        <ZeroItem onClick={()=>handleSelected('zero')} >
           0
          </ZeroItem>
         </div>
     <div>
         <ContainerStyles>
-            <ListStyles  onClick={() => handleSelectOption('3')}>
+            <ListStyles  onClick={()=>handleSelected('3')}>
                     3
            </ListStyles>
-            <ListDark onClick={() => handleSelectOption('6')} >
+            <ListDark onClick={()=>handleSelected('6')} >
                     6
             </ListDark>
-            <ListStyles onClick={() => handleSelectOption('9')} >
+            <ListStyles onClick={()=>handleSelected('9')} >
                     9
             </ListStyles>
-            <ListStyles onClick={() => handleSelectOption('12')} >
+            <ListStyles onClick={()=>handleSelected('12')} >
                     12
             </ListStyles>
-            <ListDark onClick={() => handleSelectOption('15')} >
+            <ListDark onClick={()=>handleSelected('15')} >
                     15
             </ListDark>
-            <ListStyles onClick={() => handleSelectOption('18')}>
+            <ListStyles onClick={()=>handleSelected('18')}>
                     18
             </ListStyles>
-            <ListStyles onClick={() => handleSelectOption('21')} >
+            <ListStyles onClick={()=>handleSelected('21')} >
                     21
             </ListStyles>
-             <ListDark onClick={() => handleSelectOption('24')}>
+             <ListDark onClick={()=>handleSelected('24')}>
                     24
             </ListDark>
-            <ListStyles onClick={() => handleSelectOption('27')}>
+            <ListStyles onClick={()=>handleSelected('27')}>
                     27
             </ListStyles>
-            <ListStyles onClick={() => handleSelectOption('2')}>
+            <ListStyles onClick={()=>handleSelected('30')}>
                     30
             </ListStyles>
-            <ListDark onClick={() => handleSelectOption('33')}>
+            <ListDark onClick={()=>handleSelected('33')}>
                     33
             </ListDark>
-            <ListStyles onClick={() => handleSelectOption('36')} >
+            <ListStyles onClick={()=>handleSelected('36')} >
                     36
             </ListStyles>
-            <ListDark onClick={() => handleSelectOption('2')}>
+            <ListDark onClick={()=>handleSelected('2')}>
                     2
             </ListDark>
-            <ListStyles onClick={() => handleSelectOption('5')}>
+            <ListStyles onClick={()=>handleSelected('5')}>
                     5
             </ListStyles>
-            <ListDark onClick={() => handleSelectOption('8')} >
+            <ListDark onClick={()=>handleSelected('8')} >
                     8
             </ListDark>
-            <ListDark onClick={() => handleSelectOption('11')} >
+            <ListDark onClick={()=>handleSelected('11')} >
                     11
             </ListDark>
-            <ListStyles onClick={() => handleSelectOption('14')} >
+            <ListStyles onClick={()=>handleSelected('14')} >
                     14
             </ListStyles>
-            <ListDark onClick={() => handleSelectOption('17')}>
+            <ListDark onClick={()=>handleSelected('17')}>
                     17
             </ListDark>
-            <ListDark onClick={() => handleSelectOption('20')} >
+            <ListDark onClick={()=>handleSelected('20')} >
                     20
             </ListDark>
-             <ListStyles onClick={() => handleSelectOption('23')} >
+             <ListStyles onClick={()=>handleSelected('23')} >
                     23
             </ListStyles>
-            <ListDark onClick={() => handleSelectOption('26')} >
+            <ListDark onClick={()=>handleSelected('26')} >
                     26
             </ListDark>
-            <ListDark onClick={() => handleSelectOption('29')} >
+            <ListDark onClick={()=>handleSelected('29')} >
                     29
             </ListDark>
-            <ListStyles  onClick={() => handleSelectOption('32')}>
+            <ListStyles  onClick={()=>handleSelected('32')}>
                     32
             </ListStyles>
-            <ListDark onClick={() => handleSelectOption('35')}>
+            <ListDark onClick={()=>handleSelected('35')}>
                     35
             </ListDark>
-            <ListStyles onClick={() => handleSelectOption('1')} >
+            <ListStyles onClick={()=>handleSelected('1')} >
                     1
             </ListStyles>
-            <ListDark onClick={() => handleSelectOption('4')} >
+            <ListDark onClick={()=>handleSelected('4')} >
                     4
             </ListDark>
-            <ListStyles onClick={() => handleSelectOption('7')}>
+            <ListStyles onClick={()=>handleSelected('7')}>
                     7
             </ListStyles>
-            <ListDark onClick={() => handleSelectOption('10')}>
+            <ListDark onClick={()=>handleSelected('10')}>
                     10
             </ListDark>
-            <ListDark onClick={() => handleSelectOption('13')} >
+            <ListDark onClick={()=>handleSelected('13')} >
                     13
             </ListDark>
-            <ListStyles onClick={() => handleSelectOption('16')} >
+            <ListStyles onClick={()=>handleSelected('16')} >
                     16
             </ListStyles>
-            <ListStyles onClick={() => handleSelectOption('19')} >
+            <ListStyles onClick={()=>handleSelected('19')} >
                     19
             </ListStyles>
-             <ListDark  onClick={() => handleSelectOption('22')}>
+             <ListDark  onClick={()=>handleSelected('22')}>
                     22
             </ListDark>
-            <ListStyles onClick={() => handleSelectOption('25')}>
+            <ListStyles onClick={()=>handleSelected('25')}>
                     25
             </ListStyles>
-            <ListDark onClick={() => handleSelectOption('28')} >
+            <ListDark onClick={()=>handleSelected('28')} >
                     28
-            </ListDark>
-            <ListDark onClick={() => handleSelectOption('31')}>
+            </ListDark >
+            <ListDark onClick={()=>handleSelected('31')}>
                     31
             </ListDark>
-            <ListStyles onClick={() => handleSelectOption('34')} >
+            <ListStyles onClick={()=>handleSelected('34')} >
                     34
             </ListStyles>
         </ContainerStyles>
         <ContainerStyles>
-            <ListItems onClick={handleSelectedFisrt}>
+            <ListItems onClick={()=>handleSelected('range12')}>
                 1 ~ 12 
             </ListItems>
-            <ListItems onClick={handleSelectedSecond}>
+            <ListItems onClick={()=>handleSelected('range1324')}>
                 13 ~ 24
             </ListItems>
-            <ListItems  onClick={handleSelectedThird}>
+            <ListItems  onClick={()=>handleSelected('range2536')}>
                 25 ~ 36
             </ListItems>
         </ContainerStyles>
     </div>
     <ButtonContainer>
-      <StyledButton><FontAwesomeIcon icon={faArrowRotateRight} /></StyledButton>
-      <StyledButton>x2</StyledButton>
-      <StyledButton><FontAwesomeIcon icon={faRotateLeft} /></StyledButton>
-      <StyledButton><FontAwesomeIcon icon={faTrashCan} /></StyledButton>
+      <StyledButton onClick={undo}><FontAwesomeIcon icon={faArrowRotateRight} /></StyledButton>
+      <StyledButton onClick={handleDouble}>x2</StyledButton>
+      <StyledButton onClick={redo}><FontAwesomeIcon icon={faRotateLeft} /></StyledButton>
+      <StyledButton onClick={deleteSelected}><FontAwesomeIcon icon={faTrashCan} /></StyledButton>
     </ButtonContainer>
     </CardContainer>
     <div>
     <ContainerStyles>
-            <NumberItems   onClick={handleSelectedLow}>
+            <NumberItems   onClick={()=>handleSelected('low')}>
                 LOW
             </NumberItems>
-            <NumberItems   onClick={handleSelectedEven}>
+            <NumberItems   onClick={()=>handleSelected('even')}>
                 EVEN
             </NumberItems>
-            <NumberItems >
-                
+            <NumberItems  onClick={()=>handleSelected('red')}>
+                Red
             </NumberItems>
-            <NumberItems >
-            
+            <NumberItems onClick={()=>handleSelected('black')} >
+               Black
             </NumberItems>
-            <NumberItems  onClick={handleSelectedOdd}>
+            <NumberItems  onClick={()=>handleSelected('odd')}>
                 ODD
             </NumberItems>
-            <NumberItems   onClick={handleSelectedHigh} >
+            <NumberItems   onClick={()=>handleSelected('high')} >
                 HIGH
             </NumberItems>
         </ContainerStyles>
@@ -495,11 +539,7 @@ const ContainerStyles = styled.ul`
   margin-left:0px;
 `;
 
-// const DivStyles = styled.div`
-// display:flex;
-// align-items:center;
-// justify-content: center;
-// `
+
 const ListItems = styled.li`
   display: flex;
   align-items: center;
@@ -544,7 +584,7 @@ display:flex;
 gap:0px;
 justify-content:center;
 width:100%;
-max-width:800px;
+max-width:900px;
 `
 const ButtonContainer = styled.div`
 display:flex;
@@ -649,29 +689,6 @@ const StakeBalance = styled.div`
     margin-right: 3px;
 }
 `
-// const OuterDiv = styled.div`
-//   display: flex;
-//   justify-content: space-between;
-//   align-items: center;
-//   padding: 20px;
-// `;
-
-// const InnerDiv = styled.div`
-//   display: flex;
-//   flex-direction: column;
-//   align-items: center;
-// `;
-
-
-// const Span = styled.span`
-//     font-family: Roboto;
-//     font-size: 11px;
-//     font-weight: 700;
-//     line-height: 15px;
-//     color: #fff;
-//     text-transform: none;
-// `;
-
 
 const OuterDiv = styled.div`
   width: 270px;

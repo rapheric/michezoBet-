@@ -2,28 +2,37 @@ import React from 'react';
 import styled from '@emotion/styled';
 
 
-
-const Navbar: React.FC = () => {
+interface NavProps {
+  randomNumber: number|null;
+  result: string|null;
+}
+const Navbar: React.FC <NavProps> = ({randomNumber,result}) => {
+// const[openOption, setOpenOption] = useState<boolean>(false)
   return (
     <NavbarContainer>
-      <NavItemThree>Statistics are not available yet.</NavItemThree>
+      <NavItemOne>
+        {randomNumber !== null?randomNumber:<p> Statistics are not available yet..</p>}
+         {/* <p>
+          {result === 'win' ? 'win!' : 'lose!'}
+        </p> */}
+    </NavItemOne>
      <DivContainer>
       <NavItemThree>
        <ParentDiv>
-         <ChildDiv />
-         <ChildDiv />
-         <ChildDiv />
-         <ChildDiv />
-         <ChildDiv />
+         <StatsDiv>{randomNumber}</StatsDiv>
+         <StatsDiv>{randomNumber}</StatsDiv>
+         <StatsDiv>{randomNumber} </StatsDiv>
+         <StatsDiv>{randomNumber}</StatsDiv>
+         <StatsDiv>{randomNumber}</StatsDiv>
        </ParentDiv>
       </NavItemThree>
       <NavItemTwo>
          <ParentDivs>
-           <ChildDiv />
-           <ChildDiv />
-           <ChildDiv />
-           <ChildDiv />
-           <ChildDiv />
+           <StatsDiv>{randomNumber}</StatsDiv>
+           <StatsDiv></StatsDiv>
+           <StatsDiv></StatsDiv>
+           <StatsDiv></StatsDiv>
+           <StatsDiv></StatsDiv>
          </ParentDivs>
       </NavItemTwo>
     </DivContainer>
@@ -67,6 +76,16 @@ const NavItemThree = styled.div`
     background-color: #F06543;
   }
 `;
+const NavItemOne = styled.div`
+  cursor: pointer;
+  padding: 5px 10px;
+  border-radius: 5px;
+  background-color: ;
+  transition: background-color 0.3s ease;
+  &:hover {
+    background-color: #F06543;
+  }
+`;
 const ParentDivs = styled.div`
   display: flex;
   justify-content: center;
@@ -81,12 +100,13 @@ const ParentDiv = styled.div`
   height: 35px;
   background-color:  #F06543;
 `;
-const ChildDiv = styled.div`
-  width: 20px;
-  height: 20px;
+const StatsDiv = styled.div`
+  width: 25px;
+  height: 25px;
   border-radius: 50%;
   background-color: #007bff;
   margin: 10px;
+  align-items:center;
 `;
 const DivContainer = styled.div`
 display:flex;

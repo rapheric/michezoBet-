@@ -1,17 +1,14 @@
 import React from 'react';
-import Navbar from './components/aside/Nav';
+// import Navbar from './components/aside/Nav';
 import styled from '@emotion/styled';
 import Footer from './components/footer/Footer';
-import Stats from './components/statistics/Stats';
+// import Stats from './components/statistics/Stats';
 // import Randon from './components/Rand/Randon';
 import Card from './components/card/Card';
-import UndoRedoExample from './components/div/Place';
+
 const App = () => {
  return (
   <AppContainer>
-    <Navbar/>
-    <UndoRedoExample/>
-    <Stats/>
     <Card/>
     <Footer/>
   </AppContainer>

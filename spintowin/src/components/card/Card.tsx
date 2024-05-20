@@ -5,18 +5,28 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import Navbar from '../aside/Nav';
 import Stats from '../statistics/Stats';
 
-// interface Bet {
-//         option: string;
-//       }
-      
 interface PlacedBet {
         Option: string;
         BetAmounts: number;
 }
+interface CardProps {
+        imageUrlB: string;
+        imageUrlG: string;
+        imageUrlR: string;
+        imageUrlO: string;
+        imageUrlP: string;
+        imageUrlBL: string;
+      }
+      interface DiamondProps {
+        color: string;
+        width: number;
+        height: number;
+      }
+      
 
 export const BetContext = createContext< undefined>(undefined);
 
-const Card = () => {
+const Card: React.FC<CardProps>  = ({ imageUrlB,imageUrlG,imageUrlR,imageUrlO,imageUrlP,imageUrlBL}) => {
         const [betAmount, setBetAmount] = useState<number>(10);
         // const [chipAmount, setChipAmount] = useState<number>(0);
         const [payoutAmount, setPayOutAmount] = useState<number>(0);
@@ -28,23 +38,27 @@ const Card = () => {
         const [undoStack, setUndoStack] = useState<PlacedBet[]>([]);
         // const [redoStack, setRedoStack] = useState<Bet[][]>([]);
         const [placedBets, setPlacedBets] = useState<PlacedBet[]>([])
+        const [openOption, setOpenOption] = useState<boolean>(false);
+        const [creditOpenOption, setCreditOpenOption] = useState<boolean>(false)
+        const [spinning, setSpinning] = useState(false);
+        
       
              const handleSelectOption = (option: string) => {
                 setSelectedOption(option);
               };
 
               const getOptionOdd = (o:string) :number => {
-                if(o==='even'||o==='odd'||o==='black'||o==='red'){
+                if(o==='even'||o==='odd'||o==='black'||o==='red'|| o=== 'low'|| o=== 'high'){
                         return 2;
                 }
                 else if(o==='range12'||o==='range1324'||o==='range2536'){
                         return 3;
                 }
-                else if(o==='1'||o==='low'||o==='2'||o==='3'||o==='4'||o==='5'||o==='6'||o==='7'||
+                else if(o==='1'||o==='2'||o==='3'||o==='4'||o==='5'||o==='6'||o==='7'||
                         o==='8'||o==='9'||o==='10'||o==='11'||o==='12'|| o==='13'||o==='14'||o==='15'||
                         o==='16'||o==='17'||o==='18'||o==='19'||o==='20'||o==='21'||o==='22'||o==='23'||
                         o==='24'||o==='25'||o==='26'||o==='27'||o==='28'||o==='29'||o==='30'||o==='31'
-                        ||o==='32'||o==='33'||o==='34'||o==='35'||o==='36'||o==='high'
+                        ||o==='32'||o==='33'||o==='34'||o==='35'||o==='36'
                 ){
                         return 36;
                 }
@@ -53,9 +67,16 @@ const Card = () => {
 
 
               const handleSpin = (e:any) => {
+                setOpenOption(!openOption)
                 e.preventDefault();
+                setSpinning(true);
                 const randomNumber = Math.floor(Math.random() * 37);
+                setTimeout(() => {
                 setRandomNumber(randomNumber);
+                setSpinning(false);
+                setOpenOption(false);
+                }, 3000);
+
             
         // Determine if the user has won or lost based on the selected numbers, option, and generated random number
 let hasWon = false;
@@ -75,10 +96,10 @@ payoutAmount = placedBets.filter(x=> x.Option === '1' || x.Option === 'odd'||
 break;  
 case 2:
 hasWon = placedBets.findIndex(x=> x.Option === '2' || x.Option === 'even' ||
-x.Option === 'black'||x.Option === 'range12') !== -1;
+x.Option === 'black'||x.Option === 'range12'|| x.Option === 'low') !== -1;
 if(hasWon){
         payoutAmount = placedBets.filter(x=> x.Option === '2' ||
-        x.Option === 'even'||x.Option === 'black'||x.Option === 'range12')
+        x.Option === 'even'||x.Option === 'black'||x.Option === 'range12'|| x.Option === 'low')
         .map(c => c.BetAmounts * getOptionOdd(c.Option))
         .reduce((sum, current) => sum + current);
         setPayOutAmount(payoutAmount)
@@ -87,10 +108,10 @@ if(hasWon){
 break;  
 case 3:
 hasWon = placedBets.findIndex(x=> x.Option === '3' || x.Option === 'odd'||
-        x.Option === 'red'||x.Option === 'range12') !== -1;
+        x.Option === 'red'||x.Option === 'range12'|| x.Option === 'low') !== -1;
 if(hasWon){
         payoutAmount = placedBets.filter(x=> x.Option === '3' || x.Option === 'odd'||
-                x.Option === 'red'||x.Option === 'range12')
+                x.Option === 'red'||x.Option === 'range12'|| x.Option === 'low')
                 .map(c => c.BetAmounts * getOptionOdd(c.Option))
                 .reduce((sum, current) => sum + current);
                 setPayOutAmount(payoutAmount)
@@ -99,10 +120,10 @@ if(hasWon){
 break;  
 case 4:
 hasWon = placedBets.findIndex(x=> x.Option === '4' || x.Option === 'even' ||
-x.Option === 'black'||x.Option === 'range12') !== -1;
+x.Option === 'black'||x.Option === 'range12'|| x.Option === 'low') !== -1;
         if(hasWon){
                 payoutAmount = placedBets.filter(x=> x.Option === '4' ||
-                x.Option === 'even'||x.Option === 'black'||x.Option === 'range12')
+        x.Option === 'even'||x.Option === 'black'||x.Option === 'range12'|| x.Option === 'low')
         .map(c => c.BetAmounts * getOptionOdd(c.Option))
                 .reduce((sum, current) => sum + current);
                 setPayOutAmount(payoutAmount)
@@ -111,10 +132,10 @@ x.Option === 'black'||x.Option === 'range12') !== -1;
 break;  
 case 5:
         hasWon = placedBets.findIndex(x=> x.Option === '5' || x.Option === 'odd'||
-                x.Option === 'red'||x.Option === 'range12') !== -1;
+                x.Option === 'red'||x.Option === 'range12'|| x.Option === 'low') !== -1;
         if(hasWon){
                 payoutAmount = placedBets.filter(x=> x.Option === '5' || x.Option === 'odd'||
-                        x.Option === 'red'||x.Option === 'range12')
+                        x.Option === 'red'||x.Option === 'range12'|| x.Option === 'low')
                         .map(c => c.BetAmounts * getOptionOdd(c.Option))
                         .reduce((sum, current) => sum + current);
                         setPayOutAmount(payoutAmount)
@@ -123,10 +144,10 @@ case 5:
         break;  
 case 6:
         hasWon = placedBets.findIndex(x=> x.Option === '6' || x.Option === 'even' ||
-        x.Option === 'black'||x.Option === 'range12') !== -1;
+        x.Option === 'black'||x.Option === 'range12'|| x.Option === 'low') !== -1;
                 if(hasWon){
                         payoutAmount = placedBets.filter(x=> x.Option === '6' ||
-                        x.Option === 'even'||x.Option === 'black'||x.Option === 'range12')
+                x.Option === 'even'||x.Option === 'black'||x.Option === 'range12'|| x.Option === 'low')
                 .map(c => c.BetAmounts * getOptionOdd(c.Option))
                         .reduce((sum, current) => sum + current);
                         setPayOutAmount(payoutAmount)
@@ -135,10 +156,10 @@ case 6:
         break;  
 case 7:
         hasWon = placedBets.findIndex(x=> x.Option === '7' || x.Option === 'odd'||
-                x.Option === 'red'||x.Option === 'range12') !== -1;
+                x.Option === 'red'||x.Option === 'range12'|| x.Option === 'low') !== -1;
         if(hasWon){
                 payoutAmount = placedBets.filter(x=> x.Option === '7' || x.Option === 'odd'||
-                        x.Option === 'red'||x.Option === 'range12')
+                        x.Option === 'red'||x.Option === 'range12'|| x.Option === 'low')
                         .map(c => c.BetAmounts * getOptionOdd(c.Option))
                         .reduce((sum, current) => sum + current);
                         setPayOutAmount(payoutAmount)
@@ -147,10 +168,10 @@ case 7:
         break;  
 case 8:
         hasWon = placedBets.findIndex(x=> x.Option === '8' || x.Option === 'even' ||
-        x.Option === 'black'||x.Option === 'range12') !== -1;
+        x.Option === 'black'||x.Option === 'range12'|| x.Option === 'low') !== -1;
                 if(hasWon){
                         payoutAmount = placedBets.filter(x=> x.Option === '8' ||
-                        x.Option === 'even'||x.Option === 'black'||x.Option === 'range12')
+                x.Option === 'even'||x.Option === 'black'||x.Option === 'range12'|| x.Option === 'low')
                 .map(c => c.BetAmounts * getOptionOdd(c.Option))
                         .reduce((sum, current) => sum + current);
                         setPayOutAmount(payoutAmount)
@@ -159,10 +180,10 @@ case 8:
          break;  
 case 9:
 hasWon = placedBets.findIndex(x=> x.Option === '9' || x.Option === 'odd'||
-        x.Option === 'red'|| x.Option === 'range12'||x.Option === 'range12') !== -1;
+        x.Option === 'red'|| x.Option === 'range12'||x.Option === 'range12'|| x.Option === 'low') !== -1;
 if(hasWon){
         payoutAmount = placedBets.filter(x=> x.Option === '9' || x.Option === 'odd'||
-                x.Option === 'red'|| x.Option === 'range12'||x.Option === 'range12')
+                x.Option === 'red'|| x.Option === 'range12'||x.Option === 'range12'|| x.Option === 'low')
                 .map(c => c.BetAmounts * getOptionOdd(c.Option))
                 .reduce((sum, current) => sum + current);
                 setPayOutAmount(payoutAmount)
@@ -171,10 +192,10 @@ if(hasWon){
 break;  
 case 10:
         hasWon = placedBets.findIndex(x=> x.Option === '10' || x.Option === 'even' ||
-        x.Option === 'black'|| x.Option === 'range12') !== -1;
+        x.Option === 'black'|| x.Option === 'range12'|| x.Option === 'low') !== -1;
                 if(hasWon){
                         payoutAmount = placedBets.filter(x=> x.Option === '10' ||
-                        x.Option === 'even'||x.Option === 'black'|| x.Option === 'range12')
+                x.Option === 'even'||x.Option === 'black'|| x.Option === 'range12'|| x.Option === 'low')
                 .map(c => c.BetAmounts * getOptionOdd(c.Option))
                         .reduce((sum, current) => sum + current);
                         setPayOutAmount(payoutAmount)
@@ -183,10 +204,10 @@ case 10:
         break;  
 case 11:
         hasWon = placedBets.findIndex(x=> x.Option === '11' || x.Option === 'odd'||
-                x.Option === 'black'|| x.Option === 'range12') !== -1;
+                x.Option === 'black'|| x.Option === 'range12'|| x.Option === 'low') !== -1;
         if(hasWon){
                 payoutAmount = placedBets.filter(x=> x.Option === '11' || x.Option === 'odd'||
-                        x.Option === 'black'|| x.Option === 'range12')
+                        x.Option === 'black'|| x.Option === 'range12'|| x.Option === 'low')
                         .map(c => c.BetAmounts * getOptionOdd(c.Option))
                         .reduce((sum, current) => sum + current);
                         setPayOutAmount(payoutAmount)
@@ -195,10 +216,10 @@ case 11:
         break;  
 case 12:
         hasWon = placedBets.findIndex(x=> x.Option === '12' || x.Option === 'even' ||
-        x.Option === 'red'|| x.Option === 'range12') !== -1;
+        x.Option === 'red'|| x.Option === 'range12'|| x.Option === 'low') !== -1;
                 if(hasWon){
                         payoutAmount = placedBets.filter(x=> x.Option === '12' ||
-                        x.Option === 'even'||x.Option === 'red'|| x.Option === 'range12')
+                x.Option === 'even'||x.Option === 'red'|| x.Option === 'range12'|| x.Option === 'low')
                 .map(c => c.BetAmounts * getOptionOdd(c.Option))
                         .reduce((sum, current) => sum + current);
                         setPayOutAmount(payoutAmount)
@@ -207,10 +228,10 @@ case 12:
                 break;  
 case 13:
         hasWon = placedBets.findIndex(x=> x.Option === '13' || x.Option === 'odd'||
-        x.Option === 'range1324'||x.Option === 'black') !== -1;
+        x.Option === 'range1324'||x.Option === 'black'|| x.Option === 'low') !== -1;
         if(hasWon){
         payoutAmount = placedBets.filter(x=> x.Option === '13' || x.Option === 'odd'||
-               x.Option === 'range1324'||x.Option === 'black')
+               x.Option === 'range1324'||x.Option === 'black'|| x.Option === 'low')
                 .map(c => c.BetAmounts * getOptionOdd(c.Option))
                 .reduce((sum, current) => sum + current);
                 setPayOutAmount(payoutAmount)
@@ -219,10 +240,10 @@ case 13:
         break;  
         case 14:
         hasWon = placedBets.findIndex(x=> x.Option === '14' || x.Option === 'even' ||
-        x.Option === 'red'|| x.Option === 'range1324') !== -1;
+        x.Option === 'red'|| x.Option === 'range1324'|| x.Option === 'low') !== -1;
         if(hasWon){
                 payoutAmount = placedBets.filter(x=> x.Option === '14' ||
-                x.Option === 'even'||x.Option === 'red'|| x.Option === 'range1324')
+        x.Option === 'even'||x.Option === 'red'|| x.Option === 'range1324'|| x.Option === 'low')
         .map(c => c.BetAmounts * getOptionOdd(c.Option))
                 .reduce((sum, current) => sum + current);
                 setPayOutAmount(payoutAmount)
@@ -231,10 +252,10 @@ case 13:
         break;  
         case 15:
         hasWon = placedBets.findIndex(x=> x.Option === '15' || x.Option === 'odd'||
-                x.Option === 'red'|| x.Option === 'range1324') !== -1;
+                x.Option === 'red'|| x.Option === 'range1324'|| x.Option === 'low') !== -1;
         if(hasWon){
                 payoutAmount = placedBets.filter(x=> x.Option === '15' || x.Option === 'odd'||
-                        x.Option === 'red'|| x.Option === 'range1324')
+                        x.Option === 'red'|| x.Option === 'range1324'|| x.Option === 'low')
                         .map(c => c.BetAmounts * getOptionOdd(c.Option))
                         .reduce((sum, current) => sum + current);
                         setPayOutAmount(payoutAmount)
@@ -243,10 +264,10 @@ case 13:
         break;  
         case 16:
         hasWon = placedBets.findIndex(x=> x.Option === '16' || x.Option === 'even' ||
-        x.Option === 'red'|| x.Option === 'range1324') !== -1;
+        x.Option === 'red'|| x.Option === 'range1324'|| x.Option === 'low') !== -1;
                 if(hasWon){
                         payoutAmount = placedBets.filter(x=> x.Option === '16' ||
-                        x.Option === 'even'||x.Option === 'red'|| x.Option === 'range1324')
+                x.Option === 'even'||x.Option === 'red'|| x.Option === 'range1324'|| x.Option === 'low')
                 .map(c => c.BetAmounts * getOptionOdd(c.Option))
                         .reduce((sum, current) => sum + current);
                         setPayOutAmount(payoutAmount)
@@ -255,10 +276,10 @@ case 13:
         break;  
         case 17:
                 hasWon = placedBets.findIndex(x=> x.Option === '17' || x.Option === 'odd'||
-                        x.Option === 'black'|| x.Option === 'range1324') !== -1;
+                        x.Option === 'black'|| x.Option === 'range1324'|| x.Option === 'low') !== -1;
                 if(hasWon){
                         payoutAmount = placedBets.filter(x=> x.Option === '17' || x.Option === 'odd'||
-                                x.Option === 'black'|| x.Option === 'range1324')
+                                x.Option === 'black'|| x.Option === 'range1324'|| x.Option === 'low')
                                 .map(c => c.BetAmounts * getOptionOdd(c.Option))
                                 .reduce((sum, current) => sum + current);
                                 setPayOutAmount(payoutAmount)
@@ -267,10 +288,10 @@ case 13:
                 break;  
         case 18:
                 hasWon = placedBets.findIndex(x=> x.Option === '18' || x.Option === 'even' ||
-                x.Option === 'red'|| x.Option === 'range1324') !== -1;
+                x.Option === 'red'|| x.Option === 'range1324'|| x.Option === 'low') !== -1;
                         if(hasWon){
                                 payoutAmount = placedBets.filter(x=> x.Option === '18' ||
-                                x.Option === 'even'||x.Option === 'red'|| x.Option === 'range1324')
+                x.Option === 'even'||x.Option === 'red'|| x.Option === 'range1324'|| x.Option === 'low')
                         .map(c => c.BetAmounts * getOptionOdd(c.Option))
                                 .reduce((sum, current) => sum + current);
                                 setPayOutAmount(payoutAmount)
@@ -279,10 +300,10 @@ case 13:
                 break;  
         case 19:
                 hasWon = placedBets.findIndex(x=> x.Option === '19' || x.Option === 'odd'||
-                        x.Option === 'red'|| x.Option === 'range1324') !== -1;
+                        x.Option === 'red'|| x.Option === 'range1324'|| x.Option === 'high') !== -1;
                 if(hasWon){
                         payoutAmount = placedBets.filter(x=> x.Option === '19' || x.Option === 'odd'||
-                                x.Option === 'red'|| x.Option === 'range1324')
+                        x.Option === 'red'|| x.Option === 'range1324'|| x.Option === 'high')
                                 .map(c => c.BetAmounts * getOptionOdd(c.Option))
                                 .reduce((sum, current) => sum + current);
                                 setPayOutAmount(payoutAmount)
@@ -291,10 +312,10 @@ case 13:
                 break;  
         case 20:
                 hasWon = placedBets.findIndex(x=> x.Option === '20' || x.Option === 'even' ||
-                x.Option === 'black'|| x.Option === 'range1324') !== -1;
+                x.Option === 'black'|| x.Option === 'range1324'|| x.Option === 'high') !== -1;
                         if(hasWon){
                                 payoutAmount = placedBets.filter(x=> x.Option === '20' ||
-                                x.Option === 'even'||x.Option === 'black'|| x.Option === 'range1324')
+                x.Option === 'even'||x.Option === 'black'|| x.Option === 'range1324'|| x.Option === 'high')
                         .map(c => c.BetAmounts * getOptionOdd(c.Option))
                                 .reduce((sum, current) => sum + current);
                                 setPayOutAmount(payoutAmount)
@@ -303,10 +324,10 @@ case 13:
                         break;  
         case 21:
         hasWon = placedBets.findIndex(x=> x.Option === '21' || x.Option === 'odd'||
-                x.Option === 'red'|| x.Option === 'range1324') !== -1;
+                x.Option === 'red'|| x.Option === 'range1324'|| x.Option === 'high') !== -1;
         if(hasWon){
                 payoutAmount = placedBets.filter(x=> x.Option === '21' || x.Option === 'odd'||
-                        x.Option === 'red'|| x.Option === 'range1324')
+                        x.Option === 'red'|| x.Option === 'range1324'|| x.Option === 'high')
                         .map(c => c.BetAmounts * getOptionOdd(c.Option))
                         .reduce((sum, current) => sum + current);
                         setPayOutAmount(payoutAmount)
@@ -315,10 +336,10 @@ case 13:
                 break;  
         case 22:
                 hasWon = placedBets.findIndex(x=> x.Option === '22' || x.Option === 'even' ||
-                x.Option === 'black'|| x.Option === 'range1324') !== -1;
+                x.Option === 'black'|| x.Option === 'range1324'|| x.Option === 'high') !== -1;
                         if(hasWon){
                                 payoutAmount = placedBets.filter(x=> x.Option === '22' ||
-                                x.Option === 'even'||x.Option === 'black'|| x.Option === 'range1324')
+                        x.Option === 'even'||x.Option === 'black'|| x.Option === 'range1324'|| x.Option === 'high')
                         .map(c => c.BetAmounts * getOptionOdd(c.Option))
                                 .reduce((sum, current) => sum + current);
                                 setPayOutAmount(payoutAmount)
@@ -327,10 +348,10 @@ case 13:
                 break;  
         case 23:
                 hasWon = placedBets.findIndex(x=> x.Option === '23' || x.Option === 'odd'||
-                        x.Option === 'red'|| x.Option === 'range1324') !== -1;
+                        x.Option === 'red'|| x.Option === 'range1324'|| x.Option === 'high') !== -1;
                 if(hasWon){
                         payoutAmount = placedBets.filter(x=> x.Option === '23' || x.Option === 'odd'||
-                                x.Option === 'red'|| x.Option === 'range1324')
+                                x.Option === 'red'|| x.Option === 'range1324'|| x.Option === 'high')
                                 .map(c => c.BetAmounts * getOptionOdd(c.Option))
                                 .reduce((sum, current) => sum + current);
                                 setPayOutAmount(payoutAmount)
@@ -339,10 +360,10 @@ case 13:
                 break;  
         case 24:
                 hasWon = placedBets.findIndex(x=> x.Option === '24' || x.Option === 'even' ||
-                x.Option === 'black'|| x.Option === 'range1324') !== -1;
+                x.Option === 'black'|| x.Option === 'range1324'|| x.Option === 'high') !== -1;
                         if(hasWon){
                                 payoutAmount = placedBets.filter(x=> x.Option === '24' ||
-                                x.Option === 'even'||x.Option === 'black'|| x.Option === 'range1324')
+                                x.Option === 'even'||x.Option === 'black'|| x.Option === 'range1324'|| x.Option === 'high')
                         .map(c => c.BetAmounts * getOptionOdd(c.Option))
                                 .reduce((sum, current) => sum + current);
                                 setPayOutAmount(payoutAmount)
@@ -351,10 +372,10 @@ case 13:
                         break;  
         case 25:
                 hasWon = placedBets.findIndex(x=> x.Option === '25' || x.Option === 'odd'||
-                 x.Option === 'range2536'||x.Option === 'red') !== -1;
+                 x.Option === 'range2536'||x.Option === 'red'|| x.Option === 'high') !== -1;
                 if(hasWon){
                 payoutAmount = placedBets.filter(x=> x.Option === '25' || x.Option === 'odd'||
-                x.Option === 'range2536'||x.Option === 'red')
+                x.Option === 'range2536'||x.Option === 'red'|| x.Option === 'high')
                         .map(c => c.BetAmounts * getOptionOdd(c.Option))
                         .reduce((sum, current) => sum + current);
                         setPayOutAmount(payoutAmount)
@@ -363,10 +384,10 @@ case 13:
                 break;  
         case 26:
         hasWon = placedBets.findIndex(x=> x.Option === '26' || x.Option === 'even' ||
-        x.Option === 'black'|| x.Option === 'range2536') !== -1;
+        x.Option === 'black'|| x.Option === 'range2536'|| x.Option === 'high') !== -1;
         if(hasWon){
                 payoutAmount = placedBets.filter(x=> x.Option === '26' ||
-                x.Option === 'even'||x.Option === 'black'|| x.Option === 'range2536')
+                x.Option === 'even'||x.Option === 'black'|| x.Option === 'range2536'|| x.Option === 'high')
         .map(c => c.BetAmounts * getOptionOdd(c.Option))
                 .reduce((sum, current) => sum + current);
                 setPayOutAmount(payoutAmount)
@@ -375,10 +396,10 @@ case 13:
         break;  
         case 27:
         hasWon = placedBets.findIndex(x=> x.Option === '27' || x.Option === 'odd'||
-                x.Option === 'red'|| x.Option === 'range2536') !== -1;
+                x.Option === 'red'|| x.Option === 'range2536'|| x.Option === 'high') !== -1;
         if(hasWon){
                 payoutAmount = placedBets.filter(x=> x.Option === '27' || x.Option === 'odd'||
-                        x.Option === 'red'|| x.Option === 'range2536')
+                        x.Option === 'red'|| x.Option === 'range2536'|| x.Option === 'high')
                         .map(c => c.BetAmounts * getOptionOdd(c.Option))
                         .reduce((sum, current) => sum + current);
                         setPayOutAmount(payoutAmount)
@@ -387,10 +408,10 @@ case 13:
         break;  
         case 28:
         hasWon = placedBets.findIndex(x=> x.Option === '28' || x.Option === 'even' ||
-        x.Option === 'black'|| x.Option === 'range2536') !== -1;
+        x.Option === 'black'|| x.Option === 'range2536'|| x.Option === 'high') !== -1;
                 if(hasWon){
                         payoutAmount = placedBets.filter(x=> x.Option === '28' ||
-                        x.Option === 'even'||x.Option === 'black'|| x.Option === 'range2536')
+                        x.Option === 'even'||x.Option === 'black'|| x.Option === 'range2536'|| x.Option === 'high')
                 .map(c => c.BetAmounts * getOptionOdd(c.Option))
                         .reduce((sum, current) => sum + current);
                         setPayOutAmount(payoutAmount)
@@ -399,10 +420,10 @@ case 13:
         break;  
         case 29:
                 hasWon = placedBets.findIndex(x=> x.Option === '29' || x.Option === 'odd'||
-                        x.Option === 'black'|| x.Option === 'range2536') !== -1;
+                        x.Option === 'black'|| x.Option === 'range2536'|| x.Option === 'high') !== -1;
                 if(hasWon){
                         payoutAmount = placedBets.filter(x=> x.Option === '29' || x.Option === 'odd'||
-                                x.Option === 'black'|| x.Option === 'range2536')
+                                x.Option === 'black'|| x.Option === 'range2536'|| x.Option === 'high')
                                 .map(c => c.BetAmounts * getOptionOdd(c.Option))
                                 .reduce((sum, current) => sum + current);
                                 setPayOutAmount(payoutAmount)
@@ -411,10 +432,10 @@ case 13:
                 break;  
         case 30:
                 hasWon = placedBets.findIndex(x=> x.Option === '30' || x.Option === 'even' ||
-                x.Option === 'red'|| x.Option === 'range2536') !== -1;
+                x.Option === 'red'|| x.Option === 'range2536'|| x.Option === 'high') !== -1;
                         if(hasWon){
                                 payoutAmount = placedBets.filter(x=> x.Option === '30' ||
-                                x.Option === 'even'||x.Option === 'red'|| x.Option === 'range2536')
+                                x.Option === 'even'||x.Option === 'red'|| x.Option === 'range2536'|| x.Option === 'high')
                         .map(c => c.BetAmounts * getOptionOdd(c.Option))
                                 .reduce((sum, current) => sum + current);
                                 setPayOutAmount(payoutAmount)
@@ -423,10 +444,10 @@ case 13:
                 break;  
         case 31:
                 hasWon = placedBets.findIndex(x=> x.Option === '31' || x.Option === 'odd'||
-                        x.Option === 'black'|| x.Option === 'range2536') !== -1;
+                        x.Option === 'black'|| x.Option === 'range2536'|| x.Option === 'high') !== -1;
                 if(hasWon){
                         payoutAmount = placedBets.filter(x=> x.Option === '31' || x.Option === 'odd'||
-                                x.Option === 'black'|| x.Option === 'range2536')
+                                x.Option === 'black'|| x.Option === 'range2536'|| x.Option === 'high')
                                 .map(c => c.BetAmounts * getOptionOdd(c.Option))
                                 .reduce((sum, current) => sum + current);
                                 setPayOutAmount(payoutAmount)
@@ -435,10 +456,10 @@ case 13:
                 break;  
         case 32:
                 hasWon = placedBets.findIndex(x=> x.Option === '32' || x.Option === 'even' ||
-                x.Option === 'red'|| x.Option === 'range2536') !== -1;
+                x.Option === 'red'|| x.Option === 'range2536'|| x.Option === 'high') !== -1;
                         if(hasWon){
                                 payoutAmount = placedBets.filter(x=> x.Option === '32' ||
-                                x.Option === 'even'||x.Option === 'red'|| x.Option === 'range2536')
+                                x.Option === 'even'||x.Option === 'red'|| x.Option === 'range2536'|| x.Option === 'high')
                         .map(c => c.BetAmounts * getOptionOdd(c.Option))
                                 .reduce((sum, current) => sum + current);
                                 setPayOutAmount(payoutAmount)
@@ -447,10 +468,10 @@ case 13:
                         break;  
         case 33:
         hasWon = placedBets.findIndex(x=> x.Option === '33' || x.Option === 'odd'||
-                x.Option === 'black'|| x.Option === 'range2536') !== -1;
+                x.Option === 'black'|| x.Option === 'range2536'|| x.Option === 'high') !== -1;
         if(hasWon){
                 payoutAmount = placedBets.filter(x=> x.Option === '33' || x.Option === 'odd'||
-                        x.Option === 'black'|| x.Option === 'range2536')
+                        x.Option === 'black'|| x.Option === 'range2536'|| x.Option === 'high')
                         .map(c => c.BetAmounts * getOptionOdd(c.Option))
                         .reduce((sum, current) => sum + current);
                         setPayOutAmount(payoutAmount)
@@ -459,10 +480,10 @@ case 13:
                 break;  
         case 34:
                 hasWon = placedBets.findIndex(x=> x.Option === '34' || x.Option === 'even' ||
-                x.Option === 'red'|| x.Option === 'range2536') !== -1;
+                x.Option === 'red'|| x.Option === 'range2536'|| x.Option === 'high') !== -1;
                         if(hasWon){
                                 payoutAmount = placedBets.filter(x=> x.Option === '34' ||
-                                x.Option === 'even'||x.Option === 'red'|| x.Option === 'range2536')
+                                x.Option === 'even'||x.Option === 'red'|| x.Option === 'range2536'|| x.Option === 'high')
                         .map(c => c.BetAmounts * getOptionOdd(c.Option))
                                 .reduce((sum, current) => sum + current);
                                 setPayOutAmount(payoutAmount)
@@ -471,10 +492,10 @@ case 13:
                 break;  
         case 35:
                 hasWon = placedBets.findIndex(x=> x.Option === '35' || x.Option === 'odd'||
-                        x.Option === 'black'|| x.Option === 'range2536') !== -1;
+                        x.Option === 'black'|| x.Option === 'range2536'|| x.Option === 'high') !== -1;
                 if(hasWon){
                         payoutAmount = placedBets.filter(x=> x.Option === '35' || x.Option === 'odd'||
-                                x.Option === 'black'|| x.Option === 'range2536')
+                                x.Option === 'black'|| x.Option === 'range2536'|| x.Option === 'high')
                                 .map(c => c.BetAmounts * getOptionOdd(c.Option))
                                 .reduce((sum, current) => sum + current);
                                 setPayOutAmount(payoutAmount)
@@ -483,7 +504,7 @@ case 13:
                 break;  
         case 36:
                 hasWon = placedBets.findIndex(x=> x.Option === '36' || x.Option === 'even' ||
-                x.Option === 'red'|| x.Option === 'range2536'|| x.Option === 'high') !== -1;
+                x.Option === 'red'|| x.Option === 'range2536'|| x.Option === 'high'|| x.Option === 'high') !== -1;
                         if(hasWon){
                                 payoutAmount = placedBets.filter(x=> x.Option === '36' ||
                                 x.Option === 'even'||x.Option === 'red'|| x.Option === 'high'|| x.Option === 'range2536')
@@ -541,14 +562,16 @@ case 13:
                 setSelectedOption(null)
                 setPlacedBetAmount(0)
                 setBetAmount(10)
-                setRandomNumber(null)
                 setPlacedBets([])
                 setUndoStack([])
                 setResult(null)
+                setOpenOption(false)
+                setCreditOpenOption(false)
+                setPayOutAmount(0)
            };
         
-        const handleDouble = () =>{
-        setPlacedBetAmount(betAmount*2)
+        const handleDouble = (amount:number) =>{
+        setPlacedBetAmount(amount*2)
             }
             
         const undo = () => {
@@ -579,7 +602,7 @@ case 13:
     <CardContainer>
         <div>
         <ZeroItem onClick={()=>handleSelected('zero')} >
-          0
+        <Diamond color="green" width={40} height={40} />
          </ZeroItem>
         </div>
     <div>
@@ -707,7 +730,7 @@ case 13:
     </div>
     <ButtonContainer>
       <StyledButton onClick={redo}><FontAwesomeIcon icon={faArrowRotateRight} /></StyledButton>
-      <StyledButton onClick={handleDouble}>x2</StyledButton>
+      <StyledButton onClick={()=>handleDouble}>x2</StyledButton>
       <StyledButton onClick={undo}><FontAwesomeIcon icon={faRotateLeft} /></StyledButton>
       <StyledButton onClick={deleteSelected}><FontAwesomeIcon icon={faTrashCan} /></StyledButton>
     </ButtonContainer>
@@ -721,10 +744,10 @@ case 13:
                 EVEN
             </NumberItems>
             <NumberItems  onClick={()=>handleSelected('red')}>
-                Red
+            <Diamond color="red" width={45} height={45}/>
             </NumberItems>
             <NumberItems onClick={()=>handleSelected('black')} >
-               Black
+            <Diamond color="black" width={45} height={45} />
             </NumberItems>
             <NumberItems  onClick={()=>handleSelected('odd')}>
                 ODD
@@ -739,57 +762,63 @@ case 13:
     <div>
      <FooterContainer>
      <div>
-    <StakeBalance>
-     <BalanceTitle>CREDIT</BalanceTitle>
+    <StakeBalance onClick={()=>setCreditOpenOption(!creditOpenOption)}>
+     <BalanceTitle >CREDIT</BalanceTitle>
      <BalanceAmount>KSh0.00</BalanceAmount>
     </StakeBalance>
     <StakeBalance>
      <BalanceTitle>TOTAL BET</BalanceTitle>
      <BalanceAmount>KSh{placedBetAmount}</BalanceAmount>
     </StakeBalance>
-    <StakeBalance>
+    <StakeBalanceG>
      <BalanceTitle>WIN</BalanceTitle>
      <BalanceAmount>KSh{payoutAmount}</BalanceAmount>
-    </StakeBalance>
+    </StakeBalanceG>
     </div>
   <RightDiv>
    <ActionDiv>
     <OuterDiv>
    <InnerDiv>
-   <ChildDiv 
+   <ChildDivP 
            onClick={() => setBetAmount(Number(500))}>
-      </ChildDiv>
+                <Image src={imageUrlP}/>
+   </ChildDivP>
      <Span>KSh500</Span>
    </InnerDiv>
    <InnerDiv>
-   <ChildDiv 
+   <ChildDivB
            onClick={() => setBetAmount(Number(400))}>
-      </ChildDiv>
+             <Image src={imageUrlB}/>    
+      </ChildDivB>
      <Span>KSh400</Span>
    </InnerDiv>
    <InnerDiv>
-   <ChildDiv 
+   <ChildDivO
            onClick={() => setBetAmount(Number(200))}>
-      </ChildDiv>
+                <Image src={imageUrlO}/>
+      </ChildDivO>
      <Span>KSh200</Span>
    </InnerDiv>
    <InnerDiv>
-   <ChildDiv 
+   <ChildDivG
            onClick={() => setBetAmount(Number(100))}
            >
-      </ChildDiv>
+            <Image src={imageUrlG}/>   
+      </ChildDivG>
      <Span>KSh100</Span>
    </InnerDiv>
    <InnerDiv>
-   <ChildDiv 
+   <ChildDivR
            onClick={() => setBetAmount(Number(50))}>
-      </ChildDiv>
+                <Image src={imageUrlR}/>
+      </ChildDivR>
      <Span>KSh50</Span>
    </InnerDiv>
    <InnerDiv>
-     <ChildDiv 
+     <ChildDivBL
            onClick={() => setBetAmount(Number(10))}>
-      </ChildDiv>
+                <Image src={imageUrlBL}/>
+      </ChildDivBL>
    <Span>KSh10</Span>
    </InnerDiv>
  </OuterDiv>
@@ -803,9 +832,154 @@ case 13:
  </FooterContainer>
  </div>
  </>
+ {creditOpenOption &&
+ <>
+ <Container>
+      <Title>TICKET ERROR</Title>
+      <Paragraph>You do not have enough credit</Paragraph>
+      <Buttonn onClick={()=>setCreditOpenOption(!creditOpenOption)}>Ok</Buttonn>
+    </Container>
+ </>
+}
+{openOption &&
+        <> <SContainer>
+        <Wheel>
+            <SpinnerButton  disabled={spinning}>
+        {spinning ? 'Spinning...' : ""}
+         {randomNumber !== null && !spinning && randomNumber}
+            </SpinnerButton>
+            <SNumber  variant="primary"></SNumber>
+                 <SpanNo className="one">1</SpanNo>
+            <SNumber  variant="secondary"></SNumber>
+                 <SpanNo className="one">2</SpanNo>
+            <SNumber  variant="primary"></SNumber>
+                <SpanNo className="one">3</SpanNo>
+            <SNumber  variant="secondary"></SNumber>
+                 <SpanNo className="one">4</SpanNo>
+            <SNumber  variant="primary"></SNumber>
+                 <SpanNo className="one">5</SpanNo>
+            <SNumber  variant="secondary"></SNumber>
+                <SpanNo className="one">6</SpanNo>
+            <SNumber  variant="primary"></SNumber>
+                 <SpanNo className="one">7</SpanNo>
+            <SNumber  variant="secondary"></SNumber>
+                 <SpanNo className="one">8</SpanNo>
+            <SNumber  variant="primary"></SNumber>
+                 <SpanNo className="one">9</SpanNo>
+            <SNumber  variant="secondary"></SNumber>
+                <SpanNo className="one">10</SpanNo>
+            <SNumber  variant="secondary"></SNumber>
+                 <SpanNo className="one">11</SpanNo>
+            <SNumber  variant="primary"></SNumber>
+                 <SpanNo className="one">12</SpanNo>
+            <SNumber  variant="secondary"></SNumber>
+                <SpanNo className="one">13</SpanNo>
+            <SNumber  variant="primary"></SNumber>
+                 <SpanNo className="one">14</SpanNo>
+            <SNumber  variant="secondary"></SNumber>
+                 <SpanNo className="one">15</SpanNo>
+            <SNumber  variant="primary"></SNumber>
+                 <SpanNo className="one">16</SpanNo>
+            <SNumber  variant="secondary"></SNumber>
+                <SpanNo className="one">17</SpanNo>
+            <SNumber  variant="primary"></SNumber>
+                 <SpanNo className="one">18</SpanNo>
+            <SNumber  variant="primary"></SNumber>
+                 <SpanNo className="one">19</SpanNo>
+            <SNumber  variant="secondary"></SNumber>
+                <SpanNo className="one">20</SpanNo>
+            <SNumber  variant="primary"></SNumber>
+                 <SpanNo className="one">21</SpanNo>
+            <SNumber  variant="secondary"></SNumber>
+                 <SpanNo className="one">22</SpanNo>
+            <SNumber  variant="primary"></SNumber>
+                 <SpanNo className="one">23</SpanNo>
+            <SNumber  variant="secondary"></SNumber>
+                <SpanNo className="one">24</SpanNo>
+            <SNumber  variant="primary"></SNumber>
+                 <SpanNo className="one">25</SpanNo>
+            <SNumber  variant="secondary"></SNumber>
+                 <SpanNo className="one">26</SpanNo>
+            <SNumber  variant="primary"></SNumber>
+                <SpanNo className="one">27</SpanNo>
+            <SNumber  variant="secondary"></SNumber>
+                <SpanNo className="one">28</SpanNo>
+            <SNumber  variant="secondary"></SNumber>
+                 <SpanNo className="one">29</SpanNo>
+            <SNumber  variant="primary"></SNumber>
+                 <SpanNo className="one">30</SpanNo>
+            <SNumber  variant="secondary"></SNumber>
+                 <SpanNo className="one">31</SpanNo>
+            <SNumber  variant="primary"></SNumber>
+                <SpanNo className="one">32</SpanNo>
+            <SNumber  variant="primary"></SNumber>
+                 <SpanNo className="one">33</SpanNo>
+            <SNumber  variant="primary"></SNumber>
+                 <SpanNo className="one">34</SpanNo>
+            <SNumber  variant="secondary"></SNumber>
+                <SpanNo className="one">35</SpanNo>
+            <SNumber  variant="primary"></SNumber>
+                <SpanNo className="one">36</SpanNo>
+            <Arrow />
+</Wheel>
+    </SContainer></>
+}
  </>
   )
 }
+const Image = styled.img`
+ object-fit:cover;
+ overflow:hidden;
+ object-repeat:no-repeat;
+ width:40px;
+ height:40px;
+`;
+
+const SContainer = styled.div`
+  background-color: white;
+  width: 400px;
+  height: 180px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  border-radius: 8px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  padding: 20px;
+  box-sizing: border-box;
+  position:absolute;
+  z-index:2;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+`;
+
+const Title = styled.h1`
+  margin: 0 0 20px;
+  font-size: 20px;
+  color: #333;
+  font-weight:400;
+`;
+
+const Paragraph = styled.p`
+  margin: 0 0 20px;
+  font-size: 16px;
+  color: #555;
+`;
+
+const Buttonn = styled.button`
+  background-color: #007bff;
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  font-size: 16px;
+  border-radius: 4px;
+  cursor: pointer;
+
+  &:hover {
+    background-color: #0056b3;
+  }
+`;
 const ListStyles = styled.li`
   display: flex;
   align-items: center;
@@ -879,6 +1053,7 @@ const ListItems = styled.li`
 `;
 
 const ZeroItem = styled.li`
+position :relative;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -904,6 +1079,7 @@ gap:0px;
 justify-content:center;
 width:100%;
 max-width:900px;
+position:relative;
 `
 const ButtonContainer = styled.div`
 display:flex;
@@ -920,6 +1096,7 @@ gap:30px;
 margin-right:0px;
 `
 const NumberItems = styled.li`
+   position :relative;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -936,6 +1113,19 @@ const NumberItems = styled.li`
     background-color:#A9A9A9;
   }
 `
+const Diamond = styled.div<DiamondProps>`
+  width: ${({ width }) => width}px;
+  height: ${({ height }) => height}px;
+  background-color: ${({ color }) => color};
+  position: absolute;
+//   top: 50%;
+//   left: 50%;
+  tranform-origin:0 100%;
+  transform: translate(-50%, -50%); 
+  transform:rotateX(45deg) rotateZ(45deg);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  margin:2px;
+`;
 // Styled button component
 const StyledButton = styled.button`
   padding: 12px 12px;
@@ -959,7 +1149,7 @@ const FooterContainer = styled.footer`
   min-height: 70px;
   padding: 10px;
   color: #fff;
-  background-color:blue;
+  background-color: #013b93;
   margin-top:40px;
 `;
 
@@ -1008,6 +1198,19 @@ const StakeBalance = styled.div`
     margin-right: 3px;
 }
 `
+const StakeBalanceG = styled.div`
+    display: inline-block;
+    width: 122px;
+    height: 60px;
+    padding: 3px 0 0 3px;
+    font-family: Roboto;
+    text-align: left;
+    background-color: gray;
+    border: 2px solid #d9d9d9;
+    border-radius: 3px;
+    margin-right: 3px;
+}
+`
 
 const OuterDiv = styled.div`
   width: 270px;
@@ -1024,7 +1227,75 @@ const InnerDiv = styled.div`
   display: flex;
   flex-direction: column;
 `;
+const ChildDivBL = styled.div`
+ margin-bottom: 5px;
+ cursor: pointer;
+  border-radius: 50%;
+  width: 40px;
+  height: 40px;
+  background-size: cover;
+  background-color:black;
+  background-position: center;
+  background-image: url("../public/assets/img.bb.png");
+`
+const ChildDivO = styled.div`
+ margin-bottom: 5px;
+ cursor: pointer;
+  border-radius: 50%;
+  width: 40px;
+  height: 40px;
+  background-size: cover;
+  background-position: center;
+  background-image: url("/spintowin/public/assets/img.o.png");
+ background-color:orange;
+`
+const ChildDivB = styled.div`
+ margin-bottom: 5px;
+ cursor: pointer;
+  border-radius: 50%;
+  width: 40px;
+  height: 40px;
+  background-size: cover;
+  background-position: center;
+`
+const ChildDivP = styled.div`
+ margin-bottom: 5px;
+ cursor: pointer;
+  border-radius: 50%;
+  width: 40px;
+  height: 40px;
+  background-color:purple;
+  background-size: cover;
+  background-position: center;
+  background-image: url("spintowin/public/assets/img-p.png");
+`
+const ChildDivR = styled.div`
+ margin-bottom: 5px;
+ cursor: pointer;
+  border-radius: 50%;
+  width: 40px;
+  height: 40px;
+  background-color:red;
+  background-size: cover;
+  background-position: center;
+  background-image: url("spintowin/public/assets/img.rr.png");
+`
 
+const ChildDivG = styled.div`
+ margin-bottom: 5px;
+ cursor: pointer;
+  border-radius: 50%;
+  width: 40px;
+  height: 40px;
+  background-color:green;
+  background-size: cover;
+  background-position: center;
+  background-image: url("spintowin/public/assets/img.g.png");
+`
+const ActionDiv = styled.div`
+width:250px;
+height:50px;
+`
 const Span = styled.span`
   font-family: Roboto;
     font-size: 10px;
@@ -1033,24 +1304,132 @@ const Span = styled.span`
       color: #fff;
       text-transform: none;
 `;
-const ChildDiv = styled.div`
- margin-bottom: 5px;
- cursor: pointer;
-  border-radius: 50%;
-  width: 40px;
-  height: 40px;
-  background-color: #007bff;
-`
-const ActionDiv = styled.div`
-width:250px;
-height:50px;
-`
 const RightDiv = styled.div`
 display:flex;
 gap:30px;
 `
 const ButtonDiv = styled.div`
 `
+const Container = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height:400px;
+  width:400px;
+  position: relative;
+`;
+
+const Wheel = styled.div`
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  top:0px;
+  bottom:0px;
+  border-radius: 50%;
+  border: 2px solid #333;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  overflow:hidden;
+  box-shadow:0 0 5px gray;
+            0 0 15px white;
+            0 0 18px black;
+  transition: transform 5s ease-in-out;
+`;
+
+const SNumber = styled.div <{ variant: 'primary' | 'secondary' }> `
+.prize {
+        display: block;
+        transform: rotateZ(90deg);
+        left: 8px;             
+        text-align: center;
+        font-size: 28px;
+        margin-top: -160px;
+        margin-left: -15px;
+        color: rgb(255, 255, 255);
+        text-shadow: -1px -1px 0 rgb(88, 86, 81), 1px -1px 0 rgb(88, 86, 81),
+            -1px 1px 0 rgb(88, 86, 81), 1px 1px 0 rgb(88, 86, 81);
+    }
+}
+}
+}
+
+nth-child(#{$i}) {
+border-color: $color transparent;
+transform: rotate(#{$slice-degrees-step * ($i - $k)});
+}
+}
+position: absolute;
+width: 50%;
+height: 50%;
+transform-origin: bottom right;
+transform:rotate(10deg)
+  ${({ variant }) =>
+    variant === 'primary'
+      ? `
+      background-color: red;
+    `
+      : `
+      background-color: black;
+    `}
+`
+const SpanNo = styled.div`
+position: relative;
+font-size:2em;
+font-weight:700;
+transform:rotate(10deg)
+color:white;
+clip-path:polygon(0 0 56% 0, 100% 100% 0 56% );
+display:flex;
+align-items:center;
+justify-content:center;
+user-select:none;
+cursor:pointer;
+text-shadow:3px 5px 2px rgba(0 0 0 0.15);
+`
+
+const Arrow = styled.div`
+  position: absolute;
+  top: -20px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 0;
+  height: 0;
+  border-left: 10px solid transparent;
+  border-right: 10px solid transparent;
+  border-bottom: 20px solid red;
+`;
+
+const SpinnerButton = styled.button`
+  margin-top: 20px;
+  position:absolute;
+  height:60px;
+  width:60px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  z-index:10;
+  padding: 10px 20px;
+  font-size: 16px;
+  cursor: pointer;
+  background-color: #007bff;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  &:disabled {
+    background-color: #ccc;
+  }
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  font-size: 24px;
+  font-weight: bold;
+  color: #007bff;
+  background-color: white;
+  padding: 10px;
+  border-radius: 50%;
+  border: 2px solid #007bff;
+`;
 
 export default Card
 

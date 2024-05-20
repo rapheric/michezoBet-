@@ -5,16 +5,15 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
 const OuterDiv = styled.div`
   border: 1px solid #ccc;
-  padding: 5px;
+  padding: 3px;
   display:flex;
   justify-content:space-between;
   align-items:center;
-  background-color:light-blue;
   height:30px;
   margin:0px;
   font-family: Roboto;
   font-size: 13px;
-  background-color: #013b93;
+  background-color: blue;
   color:white;
   margin-bottom:0px;
 `;
@@ -29,7 +28,8 @@ padding: 0;
 padding-right: 30px;
 text-align: center;
 color:white;
-t
+font-size:14px;
+font-weight:400;
 `;
 const SecondCol = styled.div`
 box-sizing: border-box;
@@ -38,6 +38,8 @@ max-width: 100%;
 -ms-flex: 1 1 0%;
 flex: 1 1 0%;
 padding: 0;
+font-size:14px;
+font-weight:400;
 `
 const ThirdCol = styled.div`
 -webkit-box-pack: end;
@@ -55,8 +57,9 @@ const BlueButton = styled.button`
   padding: 10px 10px;
   border: none;
   border-radius: 5px;
-  margin-right: 3px;
+  margin-right: 2px;
   width:60px;
+  height:35px;
 `;
 const StyledAnchor = styled.a`
 height: 26px;;
@@ -96,7 +99,7 @@ border-radius: 2px;
     color:white;
     border:none;
     outline:none;
-    height:33px;
+    height:35px;
  `
 
 const Footer: React.FC = () => {

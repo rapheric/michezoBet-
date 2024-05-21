@@ -41,6 +41,7 @@ const Card: React.FC<CardProps>  = ({ imageUrlB,imageUrlG,imageUrlR,imageUrlO,im
         const [openOption, setOpenOption] = useState<boolean>(false);
         const [creditOpenOption, setCreditOpenOption] = useState<boolean>(false)
         const [spinning, setSpinning] = useState(false);
+        // const [selectedImgOption, setSelectedImgOption] = useState<string | null>(null);
         
       
              const handleSelectOption = (option: string) => {
@@ -66,13 +67,12 @@ const Card: React.FC<CardProps>  = ({ imageUrlB,imageUrlG,imageUrlR,imageUrlO,im
               } 
 
 
-              const handleSpin = (e:any) => {
+              const handleSpin = () => {
                 setOpenOption(!openOption)
-                e.preventDefault();
                 setSpinning(true);
                 const randomNumber = Math.floor(Math.random() * 37);
                 setTimeout(() => {
-                setRandomNumber(randomNumber);
+                 setRandomNumber(randomNumber);
                 setSpinning(false);
                 setOpenOption(false);
                 }, 3000);
@@ -524,19 +524,6 @@ case 13:
                 setResult(hasWon ? 'win' : 'lose');
               };
             
-        //       Calculate payout based on the bet amount
-        //       const calculatePayout = (): number => {
-        //         let odd2: Array<string | null> = ['even', 'odd', 'black', 'red'];
-        //         let odd3: Array<string | null> = ['range12', 'range1324', 'range2536'];
-        //          let odd36: Array<string | null> = ['zero', '1', '2', '3','4','5','6','7','8','9','10','11','12',
-        //                 '13', '14', '15', '16','17','18','19','20','21','22','23','24','25',
-        //                 '26', '27', '28', '29','30','31','32','33','34','35','36']
-
-        //         return   result === 'win' && odd2.includes(selectedOption) ? chipAmount * 2:
-        //         result === 'win' && odd3.includes(selectedOption) ? chipAmount * 3:
-        //         result === 'win' && odd36.includes(selectedOption) ? chipAmount * 36:
-        //        0;
-        // }
 
         const setPlacedAmont = ()=>{
                 let amount = 0;
@@ -546,7 +533,38 @@ case 13:
 
                 setPlacedBetAmount(amount)
         }
-       
+
+        const getDisplayImage = (option:string) =>  {
+                let betAmount = placedBets.slice().reverse().find(x=> x.Option === option)?.BetAmounts;
+                let img = '';
+                if(betAmount === 10){
+                 img = imageUrlBL;
+                }
+
+                if(betAmount === 50){
+                        img = imageUrlR;
+                }
+
+                if(betAmount === 100){
+                        img = imageUrlG;
+                }
+
+                if(betAmount === 200){
+                        img = imageUrlO;
+                }
+                if(betAmount === 400){
+                        img = imageUrlB;
+                }
+
+                if(betAmount === 500){
+                        img = imageUrlP;
+                }
+                console.log('IMG:', img);
+                
+                return img;
+        }
+        
+        
         const handleSelected = (option:string ) =>{
         handleSelectOption(option)
         placedBets.push({
@@ -556,7 +574,7 @@ case 13:
         
         setPlacedAmont();
         console.log(placedBets);
-            };
+            }
 
         const deleteSelected = () =>{
                 setSelectedOption(null)
@@ -608,123 +626,125 @@ case 13:
     <div>
         <ContainerStyles>
             <ListStyles  onClick={()=>handleSelected('3')}>
-                    3
+           { (placedBets.findIndex(x=> x.Option === '3') !==-1) ? (<Image src={getDisplayImage('3')}/>):3}
+                    
            </ListStyles>
             <ListDark onClick={()=>handleSelected('6')} >
-                    6
+            { (placedBets.findIndex(x=> x.Option === '6') !== -1) ? (<Image src={getDisplayImage('6')}/>):6}
+                    
             </ListDark>
             <ListStyles onClick={()=>handleSelected('9')} >
-                    9
+            { (placedBets.findIndex(x=> x.Option === '9') !== -1) ? (<Image src={getDisplayImage('9')}/>):9}
             </ListStyles>
             <ListStyles onClick={()=>handleSelected('12')} >
-                    12
+            { (placedBets.findIndex(x=> x.Option === '12') !== -1) ? (<Image src={getDisplayImage('12')}/>):12}
             </ListStyles>
             <ListDark onClick={()=>handleSelected('15')} >
-                    15
+            { (placedBets.findIndex(x=> x.Option === '15') !== -1) ? (<Image src={getDisplayImage('15')}/>):15}
             </ListDark>
             <ListStyles onClick={()=>handleSelected('18')}>
-                    18
+            { (placedBets.findIndex(x=> x.Option === '18') !== -1) ? (<Image src={getDisplayImage('18')}/>):18}
             </ListStyles>
             <ListStyles onClick={()=>handleSelected('21')} >
-                    21
+            { (placedBets.findIndex(x=> x.Option === '21') !== -1) ? (<Image src={getDisplayImage('21')}/>):21}
             </ListStyles>
              <ListDark onClick={()=>handleSelected('24')}>
-                    24
+             { (placedBets.findIndex(x=> x.Option === '24') !== -1) ? (<Image src={getDisplayImage('24')}/>):24}
             </ListDark>
             <ListStyles onClick={()=>handleSelected('27')}>
-                    27
+            { (placedBets.findIndex(x=> x.Option === '27') !== -1) ? (<Image src={getDisplayImage('27')}/>):27}
             </ListStyles>
             <ListStyles onClick={()=>handleSelected('30')}>
-                    30
+            { (placedBets.findIndex(x=> x.Option === '30') !== -1) ? (<Image src={getDisplayImage('30')}/>):30}
             </ListStyles>
             <ListDark onClick={()=>handleSelected('33')}>
-                    33
+            { (placedBets.findIndex(x=> x.Option === '33') !== -1) ? (<Image src={getDisplayImage('33')}/>):33}
             </ListDark>
             <ListStyles onClick={()=>handleSelected('36')} >
-                    36
+            { (placedBets.findIndex(x=> x.Option === '36') !== -1) ? (<Image src={getDisplayImage('36')}/>):36}
             </ListStyles>
             <ListDark onClick={()=>handleSelected('2')}>
-                    2
+            { (placedBets.findIndex(x=> x.Option === '2') !== -1) ? (<Image src={getDisplayImage('2')}/>):2}
             </ListDark>
             <ListStyles onClick={()=>handleSelected('5')}>
-                    5
+            { (placedBets.findIndex(x=> x.Option === '5') !== -1) ? (<Image src={getDisplayImage('5')}/>):5}
             </ListStyles>
             <ListDark onClick={()=>handleSelected('8')} >
-                    8
+            { (placedBets.findIndex(x=> x.Option === '8') !== -1) ? (<Image src={getDisplayImage('8')}/>):8}
             </ListDark>
             <ListDark onClick={()=>handleSelected('11')} >
-                    11
+            { (placedBets.findIndex(x=> x.Option === '11') !== -1) ? (<Image src={getDisplayImage('11')}/>):11}
             </ListDark>
             <ListStyles onClick={()=>handleSelected('14')} >
-                    14
+            { (placedBets.findIndex(x=> x.Option === '14') !== -1) ? (<Image src={getDisplayImage('14')}/>):14}
             </ListStyles>
             <ListDark onClick={()=>handleSelected('17')}>
-                    17
+            { (placedBets.findIndex(x=> x.Option === '17') !== -1) ? (<Image src={getDisplayImage('17')}/>):17}
             </ListDark>
             <ListDark onClick={()=>handleSelected('20')} >
-                    20
+            { (placedBets.findIndex(x=> x.Option === '20') !== -1) ? (<Image src={getDisplayImage('20')}/>):20}
             </ListDark>
              <ListStyles onClick={()=>handleSelected('23')} >
-                    23
+             { (placedBets.findIndex(x=> x.Option === '23') !== -1) ? (<Image src={getDisplayImage('23')}/>):23}
             </ListStyles>
             <ListDark onClick={()=>handleSelected('26')} >
-                    26
+            { (placedBets.findIndex(x=> x.Option === '26') !== -1) ? (<Image src={getDisplayImage('26')}/>):26}
             </ListDark>
             <ListDark onClick={()=>handleSelected('29')} >
-                    29
+            { (placedBets.findIndex(x=> x.Option === '29') !== -1) ? (<Image src={getDisplayImage('29')}/>):29}
             </ListDark>
             <ListStyles  onClick={()=>handleSelected('32')}>
-                    32
+            { (placedBets.findIndex(x=> x.Option === '32') !== -1) ? (<Image src={getDisplayImage('32')}/>):32}
             </ListStyles>
             <ListDark onClick={()=>handleSelected('35')}>
-                    35
+            { (placedBets.findIndex(x=> x.Option === '35') !== -1) ? (<Image src={getDisplayImage('35')}/>):35}
             </ListDark>
             <ListStyles onClick={()=>handleSelected('1')} >
-                    1
+            { (placedBets.findIndex(x=> x.Option === '1') !== -1) ? (<Image src={getDisplayImage('1')}/>):1}
             </ListStyles>
             <ListDark onClick={()=>handleSelected('4')} >
-                    4
+            { (placedBets.findIndex(x=> x.Option === '4') !== -1) ? (<Image src={getDisplayImage('4')}/>):4}
             </ListDark>
             <ListStyles onClick={()=>handleSelected('7')}>
-                    7
+            { (placedBets.findIndex(x=> x.Option === '7') !== -1) ? (<Image src={getDisplayImage('7')}/>):7}
             </ListStyles>
             <ListDark onClick={()=>handleSelected('10')}>
-                    10
+            { (placedBets.findIndex(x=> x.Option === '10') !== -1) ? (<Image src={getDisplayImage('10')}/>):10}
             </ListDark>
             <ListDark onClick={()=>handleSelected('13')} >
-                    13
+            { (placedBets.findIndex(x=> x.Option === '13') !== -1) ? (<Image src={getDisplayImage('13')}/>):13}
             </ListDark>
             <ListStyles onClick={()=>handleSelected('16')} >
-                    16
+            { (placedBets.findIndex(x=> x.Option === '16') !== -1) ? (<Image src={getDisplayImage('16')}/>):16}
             </ListStyles>
             <ListStyles onClick={()=>handleSelected('19')} >
-                    19
+            { (placedBets.findIndex(x=> x.Option === '19') !== -1) ? (<Image src={getDisplayImage('19')}/>):19}
             </ListStyles>
              <ListDark  onClick={()=>handleSelected('22')}>
-                    22
+             { (placedBets.findIndex(x=> x.Option === '22') !== -1) ? (<Image src={getDisplayImage('22')}/>):22}
             </ListDark>
             <ListStyles onClick={()=>handleSelected('25')}>
-                    25
+            { (placedBets.findIndex(x=> x.Option === '25') !== -1) ? (<Image src={getDisplayImage('25')}/>):25}
             </ListStyles>
             <ListDark onClick={()=>handleSelected('28')} >
-                    28
+            { (placedBets.findIndex(x=> x.Option === '28') !== -1) ? (<Image src={getDisplayImage('28')}/>):28}
             </ListDark >
             <ListDark onClick={()=>handleSelected('31')}>
-                    31
+            { (placedBets.findIndex(x=> x.Option === '31') !== -1) ? (<Image src={getDisplayImage('31')}/>):31}
             </ListDark>
             <ListStyles onClick={()=>handleSelected('34')} >
-                    34
+            { (placedBets.findIndex(x=> x.Option === '34') !== -1) ? (<Image src={getDisplayImage('34')}/>):34}
             </ListStyles>
         </ContainerStyles>
         <ContainerStyles>
             <ListItems onClick={()=>handleSelected('range12')}>
-                1 ~ 12 
+           { (placedBets.findIndex(x=> x.Option === 'range12') !== -1) ? (<Image src={getDisplayImage('range12')}/>):' 1 ~ 12'}
             </ListItems>
             <ListItems onClick={()=>handleSelected('range1324')}>
-                13 ~ 24
+            { (placedBets.findIndex(x=> x.Option === 'range1324') !== -1) ? (<Image src={getDisplayImage('range1324')}/>):'13 ~ 24'} 
             </ListItems>
             <ListItems  onClick={()=>handleSelected('range2536')}>
-                25 ~ 36
+            { (placedBets.findIndex(x=> x.Option === 'range2536') !== -1) ? (<Image src={getDisplayImage('range2536')}/>):'25 ~ 36'} 
             </ListItems>
         </ContainerStyles>
     </div>
@@ -738,22 +758,24 @@ case 13:
     <div>
     <ContainerStyles>
             <NumberItems   onClick={()=>handleSelected('low')}>
-                LOW
+            { (placedBets.findIndex(x=> x.Option === 'low') !== -1) ? (<Image src={getDisplayImage('low')}/>):'LOW'}
             </NumberItems>
             <NumberItems   onClick={()=>handleSelected('even')}>
-                EVEN
+            { (placedBets.findIndex(x=> x.Option === 'even') !== -1) ? (<Image src={getDisplayImage('even')}/>):'EVEN'}
             </NumberItems>
             <NumberItems  onClick={()=>handleSelected('red')}>
-            <Diamond color="red" width={45} height={45}/>
+            { (placedBets.findIndex(x=> x.Option === 'red') !== -1) ? (<Image src={getDisplayImage('red')}/>):
+            (<Diamond color="red" width={45} height={45}/>)}
             </NumberItems>
             <NumberItems onClick={()=>handleSelected('black')} >
-            <Diamond color="black" width={45} height={45} />
+            { (placedBets.findIndex(x=> x.Option === 'black') !== -1) ? (<Image src={getDisplayImage('black')}/>):
+            (<Diamond color="black" width={45} height={45}/>)}
             </NumberItems>
             <NumberItems  onClick={()=>handleSelected('odd')}>
-                ODD
+            { (placedBets.findIndex(x=> x.Option === 'odd') !== -1) ? (<Image src={getDisplayImage('odd')}/>):'ODD'}
             </NumberItems>
             <NumberItems   onClick={()=>handleSelected('high')} >
-                HIGH
+            { (placedBets.findIndex(x=> x.Option === 'high') !== -1) ? (<Image src={getDisplayImage('high')}/>):'HIGH'}
             </NumberItems>
         </ContainerStyles>
     </div>
@@ -824,13 +846,31 @@ case 13:
  </OuterDiv>
  </ActionDiv>
    <ButtonDiv>
-     <Button onClick={handleSpin}>
+     <Button onClick={handleSpin} disabled={spinning}>
     
      </Button>
    </ButtonDiv>
    </RightDiv>
  </FooterContainer>
  </div>
+ {/* displaying the odds instruction. use open Option */}
+ {/* <>
+ <CardWrapper>
+    <CardContainer>
+        <ZeroItem onClick={()=>handleSelected('zero')} >
+
+         </ZeroItem>
+        <ContainerStyles>
+           
+        </ContainerStyles>
+        <ContainerStyles>
+          
+        </ContainerStyles>
+    </CardContainer>
+    <ContainerStyles>
+    </ContainerStyles>
+</CardWrapper>
+ </> */}
  </>
  {creditOpenOption &&
  <>
@@ -842,89 +882,66 @@ case 13:
  </>
 }
 {openOption &&
-        <> <SContainer>
+        <> 
         <Wheel>
+                {spinning}
             <SpinnerButton  disabled={spinning}>
-        {spinning ? 'Spinning...' : ""}
+        {spinning ? 'Spn' : ""}
          {randomNumber !== null && !spinning && randomNumber}
-            </SpinnerButton>
-            <SNumber  variant="primary"></SNumber>
-                 <SpanNo className="one">1</SpanNo>
-            <SNumber  variant="secondary"></SNumber>
-                 <SpanNo className="one">2</SpanNo>
-            <SNumber  variant="primary"></SNumber>
-                <SpanNo className="one">3</SpanNo>
-            <SNumber  variant="secondary"></SNumber>
-                 <SpanNo className="one">4</SpanNo>
-            <SNumber  variant="primary"></SNumber>
-                 <SpanNo className="one">5</SpanNo>
-            <SNumber  variant="secondary"></SNumber>
-                <SpanNo className="one">6</SpanNo>
-            <SNumber  variant="primary"></SNumber>
-                 <SpanNo className="one">7</SpanNo>
-            <SNumber  variant="secondary"></SNumber>
-                 <SpanNo className="one">8</SpanNo>
-            <SNumber  variant="primary"></SNumber>
-                 <SpanNo className="one">9</SpanNo>
-            <SNumber  variant="secondary"></SNumber>
-                <SpanNo className="one">10</SpanNo>
-            <SNumber  variant="secondary"></SNumber>
-                 <SpanNo className="one">11</SpanNo>
-            <SNumber  variant="primary"></SNumber>
-                 <SpanNo className="one">12</SpanNo>
-            <SNumber  variant="secondary"></SNumber>
-                <SpanNo className="one">13</SpanNo>
-            <SNumber  variant="primary"></SNumber>
-                 <SpanNo className="one">14</SpanNo>
-            <SNumber  variant="secondary"></SNumber>
-                 <SpanNo className="one">15</SpanNo>
-            <SNumber  variant="primary"></SNumber>
-                 <SpanNo className="one">16</SpanNo>
-            <SNumber  variant="secondary"></SNumber>
-                <SpanNo className="one">17</SpanNo>
-            <SNumber  variant="primary"></SNumber>
-                 <SpanNo className="one">18</SpanNo>
-            <SNumber  variant="primary"></SNumber>
-                 <SpanNo className="one">19</SpanNo>
-            <SNumber  variant="secondary"></SNumber>
-                <SpanNo className="one">20</SpanNo>
-            <SNumber  variant="primary"></SNumber>
-                 <SpanNo className="one">21</SpanNo>
-            <SNumber  variant="secondary"></SNumber>
-                 <SpanNo className="one">22</SpanNo>
-            <SNumber  variant="primary"></SNumber>
-                 <SpanNo className="one">23</SpanNo>
-            <SNumber  variant="secondary"></SNumber>
-                <SpanNo className="one">24</SpanNo>
-            <SNumber  variant="primary"></SNumber>
-                 <SpanNo className="one">25</SpanNo>
-            <SNumber  variant="secondary"></SNumber>
-                 <SpanNo className="one">26</SpanNo>
-            <SNumber  variant="primary"></SNumber>
-                <SpanNo className="one">27</SpanNo>
-            <SNumber  variant="secondary"></SNumber>
-                <SpanNo className="one">28</SpanNo>
-            <SNumber  variant="secondary"></SNumber>
-                 <SpanNo className="one">29</SpanNo>
-            <SNumber  variant="primary"></SNumber>
-                 <SpanNo className="one">30</SpanNo>
-            <SNumber  variant="secondary"></SNumber>
-                 <SpanNo className="one">31</SpanNo>
-            <SNumber  variant="primary"></SNumber>
-                <SpanNo className="one">32</SpanNo>
-            <SNumber  variant="primary"></SNumber>
-                 <SpanNo className="one">33</SpanNo>
-            <SNumber  variant="primary"></SNumber>
-                 <SpanNo className="one">34</SpanNo>
-            <SNumber  variant="secondary"></SNumber>
-                <SpanNo className="one">35</SpanNo>
-            <SNumber  variant="primary"></SNumber>
-                <SpanNo className="one">36</SpanNo>
+             </SpinnerButton>
+          
+          <Div0 ><Span1>0</Span1></Div0>
+          <Div1 ><Span1>1</Span1></Div1>
+          <Div2 ><Span1>2</Span1></Div2>
+          <Div3 ><Span1>3</Span1></Div3>
+          <Div4 ><Span1>4</Span1></Div4>
+          <Div5 ><Span1>5</Span1></Div5>
+          <Div6 ><Span1>6</Span1></Div6>
+          <Div7 ><Span1>7</Span1></Div7>
+          <Div8 ><Span1>8</Span1></Div8>
+          <Div9 ><Span1>9</Span1></Div9>
+          <Div10 ><Span1>10</Span1></Div10>
+          <Div11 ><Span1>11</Span1></Div11>
+          <Div12 ><Span1>12</Span1></Div12>
+          <Div13 ><Span1>13</Span1></Div13>
+          <Div14 ><Span1>14</Span1></Div14>
+          <Div15 ><Span1>15</Span1></Div15>
+          <Div16 ><Span1>16</Span1></Div16>
+          <Div17 ><Span1>17</Span1></Div17>
+          <Div18 ><Span1>18</Span1></Div18>
+          <Div19 ><Span1>19</Span1></Div19>
+          <Div20 ><Span1>20</Span1></Div20>
+          <Div21 ><Span1>21</Span1></Div21>
+          <Div22 ><Span1>22</Span1></Div22>
+          <Div23 ><Span1>23</Span1></Div23>
+          <Div24 ><Span1>24</Span1></Div24>
+          <Div25 ><Span1>25</Span1></Div25>
+          <Div26 ><Span1>26</Span1></Div26>
+          <Div27 ><Span1>27</Span1></Div27>
+          <Div28 ><Span1>28</Span1></Div28>
+          <Div29 ><Span1>29</Span1></Div29>
+          <Div30 ><Span1>30</Span1></Div30>
+          <Div31 ><Span1>31</Span1></Div31>
+          <Div32 ><Span1 >32</Span1></Div32>
+          <Div33 ><Span1>33</Span1></Div33>
+          <Div34 ><Span1>34</Span1></Div34>
+          <Div35><Span1>35</Span1></Div35>
+          <Div36><Span1 >36</Span1></Div36>
             <Arrow />
 </Wheel>
-    </SContainer></>
+</>
 }
+{
+        openOption &&
+        <>
+        
+        </>
+ }
  </>
+ 
+
+
+ 
   )
 }
 const Image = styled.img`
@@ -933,25 +950,6 @@ const Image = styled.img`
  object-repeat:no-repeat;
  width:40px;
  height:40px;
-`;
-
-const SContainer = styled.div`
-  background-color: white;
-  width: 400px;
-  height: 180px;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  border-radius: 8px;
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-  padding: 20px;
-  box-sizing: border-box;
-  position:absolute;
-  z-index:2;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
 `;
 
 const Title = styled.h1`
@@ -1094,6 +1092,7 @@ flex-direction:column;
 align-items:center;
 gap:30px;
 margin-right:0px;
+position:relative;
 `
 const NumberItems = styled.li`
    position :relative;
@@ -1316,77 +1315,34 @@ const Container = styled.div`
   justify-content: center;
   height:400px;
   width:400px;
-  position: relative;
-`;
-
-const Wheel = styled.div`
   position: absolute;
-  width: 100%;
-  height: 100%;
-  top:0px;
-  bottom:0px;
-  border-radius: 50%;
-  border: 2px solid #333;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  overflow:hidden;
-  box-shadow:0 0 5px gray;
-            0 0 15px white;
-            0 0 18px black;
-  transition: transform 5s ease-in-out;
+  top:10%;
+  left:40%;
+`;
+const Wheel = styled.div`
+        position: relative;
+        width: 400px;
+        height: 400px;
+        margin:1em auto;
+        border: 2px solid whitesmoke;
+        padding: 0;
+        border-radius: 50%;
+        overflow: hidden;     
+        position:absolute;
+        top:10%;
+        left:35%;
+        z-index:2;
 `;
 
-const SNumber = styled.div <{ variant: 'primary' | 'secondary' }> `
-.prize {
-        display: block;
-        transform: rotateZ(90deg);
-        left: 8px;             
-        text-align: center;
-        font-size: 28px;
-        margin-top: -160px;
-        margin-left: -15px;
-        color: rgb(255, 255, 255);
-        text-shadow: -1px -1px 0 rgb(88, 86, 81), 1px -1px 0 rgb(88, 86, 81),
-            -1px 1px 0 rgb(88, 86, 81), 1px 1px 0 rgb(88, 86, 81);
-    }
-}
-}
-}
-
-nth-child(#{$i}) {
-border-color: $color transparent;
-transform: rotate(#{$slice-degrees-step * ($i - $k)});
-}
-}
-position: absolute;
-width: 50%;
-height: 50%;
-transform-origin: bottom right;
-transform:rotate(10deg)
-  ${({ variant }) =>
-    variant === 'primary'
-      ? `
-      background-color: red;
-    `
-      : `
-      background-color: black;
-    `}
-`
-const SpanNo = styled.div`
-position: relative;
-font-size:2em;
-font-weight:700;
-transform:rotate(10deg)
-color:white;
-clip-path:polygon(0 0 56% 0, 100% 100% 0 56% );
-display:flex;
-align-items:center;
-justify-content:center;
-user-select:none;
-cursor:pointer;
-text-shadow:3px 5px 2px rgba(0 0 0 0.15);
-`
+// const SNumber = styled.div <{ variant: 'primary' | 'secondary' }> `
+//     ${({ variant }) =>
+//     variant === 'primary'
+//       ? `
+//       background-color: red;
+//     `
+//       : `
+//       background-color: black;
+//     `}`
 
 const Arrow = styled.div`
   position: absolute;
@@ -1401,35 +1357,463 @@ const Arrow = styled.div`
 `;
 
 const SpinnerButton = styled.button`
-  margin-top: 20px;
   position:absolute;
   height:60px;
   width:60px;
-  display:flex;
-  align-items:center;
-  justify-content:center;
+  top:50%;
+  left:50%
   z-index:10;
-  padding: 10px 20px;
-  font-size: 16px;
+  padding: 2px 4px;
+  font-size: 8px;
   cursor: pointer;
-  background-color: #007bff;
+  background-color: green;
   color: white;
-  border: none;
-  border-radius: 5px;
+  border-radius: 50%;
   &:disabled {
     background-color: #ccc;
   }
-  top: 50%;
-  left: 50%;
   transform: translate(-50%, -50%);
-  font-size: 24px;
-  font-weight: bold;
-  color: #007bff;
-  background-color: white;
-  padding: 10px;
-  border-radius: 50%;
-  border: 2px solid #007bff;
+//   font-size: 24px;
+//   font-weight: bold;
+//   color: #007bff;
+//   background-color: white;
+//   padding: 10px;
+//   border-radius: 50%;
+    border: 2px solid #007bff;
 `;
+const Div0 = styled.div`
+  background-color:green;
+  transform: rotate(10deg) skewY(-60deg);
+  overflow: hidden;
+  position: absolute;
+  right: 0;
+  top: 0;
+  width: 50%;
+  height: 50%;
+  transform-origin: 0% 100%;
+`
+const Div1 = styled.div`
+    background-color: red;
+    transform: rotate(20deg) skewY(-60deg);
+    overflow: hidden;
+    position: absolute;
+    right: 0;
+    top: 0;
+    width: 50%;
+    height: 50%;
+    transform-origin: 0% 100%;
+    color:white;
+`
+const Div2 = styled.div`
+  background-color: black;
+  transform: rotate(30deg) skewY(-60deg);
+  overflow: hidden;
+  position: absolute;
+  right: 0;
+  top: 0;
+  width: 50%;
+  height: 50%;
+  transform-origin: 0% 100%;
+`
+const Div3 = styled.div`
+  background-color:red;
+  transform: rotate(40deg) skewY(-60deg);
+  overflow: hidden;
+  position: absolute;
+  right: 0;
+  top: 0;
+  width: 50%;
+  height: 50%;
+  transform-origin: 0% 100%;
+`
+const Div4 = styled.div`
+  background-color: black;
+  transform: rotate(50deg) skewY(-60deg);
+  overflow: hidden;
+  position: absolute;
+  right: 0;
+  top: 0;
+  width: 50%;
+  height: 50%;
+  transform-origin: 0% 100%;
+`
+const Div5 = styled.div`
+  background-color: red;
+  transform: rotate(60deg) skewY(-60deg);
+  overflow: hidden;
+  position: absolute;
+  right: 0;
+  top: 0;
+  width: 50%;
+  height: 50%;
+  transform-origin: 0% 100%;
+`
+const Div6 = styled.div`
+  background-color: black;
+  transform: rotate(70deg) skewY(-60deg);
+  overflow: hidden;
+  position: absolute;
+  right: 0;
+  top: 0;
+  width: 50%;
+  height: 50%;
+  transform-origin: 0% 100%;
+`
+const Div7 = styled.div`
+  background-color: red;
+  transform: rotate(80deg) skewY(-60deg);
+  overflow: hidden;
+  position: absolute;
+  right: 0;
+  top: 0;
+  width: 50%;
+  height: 50%;
+  transform-origin: 0% 100%;
+`
+const Div8 = styled.div`
+  background-color:black;
+  transform: rotate(90deg) skewY(-60deg);
+  overflow: hidden;
+  position: absolute;
+  right: 0;
+  top: 0;
+  width: 50%;
+  height: 50%;
+  transform-origin: 0% 100%;
+`
+const Div9 = styled.div`
+  background-color: red;
+  transform: rotate(100deg) skewY(-60deg);
+  overflow: hidden;
+  position: absolute;
+  right: 0;
+  top: 0;
+  width: 50%;
+  height: 50%;
+  transform-origin: 0% 100%;
+`
+const Div10 = styled.div`
+  background-color: black;
+  transform: rotate(110deg) skewY(-60deg);
+  overflow: hidden;
+  position: absolute;
+  right: 0;
+  top: 0;
+  width: 50%;
+  height: 50%;
+  transform-origin: 0% 100%;
+`
+const Div11 = styled.div`
+  background-color:black;
+  transform: rotate(120deg) skewY(-60deg);
+  overflow: hidden;
+  position: absolute;
+  right: 0;
+  top: 0;
+  width: 50%;
+  height: 50%;
+  transform-origin: 0% 100%;
+`
+const Div12 = styled.div`
+  background-color:red;
+  transform: rotate(130deg) skewY(-60deg);
+  overflow: hidden;
+  position: absolute;
+  right: 0;
+  top: 0;
+  width: 50%;
+  height: 50%;
+  transform-origin: 0% 100%;
+`
+const Div13 = styled.div`
+    background-color: black;
+    transform: rotate(140deg) skewY(-60deg);
+    overflow: hidden;
+    position: absolute;
+    right: 0;
+    top: 0;
+    width: 50%;
+    height: 50%;
+    transform-origin: 0% 100%;
+`
+const Div14 = styled.div`
+  background-color: red;
+  transform: rotate(150deg) skewY(-60deg);
+  overflow: hidden;
+  position: absolute;
+  right: 0;
+  top: 0;
+  width: 50%;
+  height: 50%;
+  transform-origin: 0% 100%;
+`
+
+const Div15 = styled.div`
+  background-color: black;
+  transform: rotate(160deg) skewY(-60deg); 
+  overflow: hidden;
+  position: absolute;
+  right: 0;
+  top: 0;
+  width: 50%;
+  height: 50%;
+  transform-origin: 0% 100%;
+`
+const Div16 = styled.div`
+  background-color:red;
+  transform: rotate(170deg) skewY(-60deg);
+  overflow: hidden;
+  position: absolute;
+  right: 0;
+  top: 0;
+  width: 50%;
+  height: 50%;
+  transform-origin: 0% 100%;
+`
+const Div17 = styled.div`
+  background-color: black;
+  transform: rotate(180deg) skewY(-60deg);
+  overflow: hidden;
+  position: absolute;
+  right: 0;
+  top: 0;
+  width: 50%;
+  height: 50%;
+  transform-origin: 0% 100%;
+`
+const Div18 = styled.div`
+  background-color: red;
+  transform: rotate(190deg) skewY(-60deg);
+  overflow: hidden;
+  position: absolute;
+  right: 0;
+  top: 0;
+  width: 50%;
+  height: 50%;
+  transform-origin: 0% 100%;
+`
+const Div19 = styled.div`
+  background-color: red;
+  transform: rotate(200deg) skewY(-60deg);
+  overflow: hidden;
+  position: absolute;
+  right: 0;
+  top: 0;
+  width: 50%;
+  height: 50%;
+  transform-origin: 0% 100%;
+`
+const Div20 = styled.div`
+  background-color:black;
+  transform: rotate(210deg) skewY(-60deg);
+  overflow: hidden;
+  position: absolute;
+  right: 0;
+  top: 0;
+  width: 50%;
+  height: 50%;
+  transform-origin: 0% 100%;
+`
+const Div21 = styled.div`
+  background-color: red;
+  transform: rotate(220deg) skewY(-60deg);
+  overflow: hidden;
+  position: absolute;
+  right: 0;
+  top: 0;
+  width: 50%;
+  height: 50%;
+  transform-origin: 0% 100%;
+`
+const Div22 = styled.div`
+  background-color: black;
+  transform: rotate(230deg) skewY(-60deg);
+  overflow: hidden;
+  position: absolute;
+  right: 0;
+  top: 0;
+  width: 50%;
+  height: 50%;
+  transform-origin: 0% 100%;
+`
+const Div23 = styled.div`
+  background-color:red;
+  transform: rotate(240deg) skewY(-60deg);
+  overflow: hidden;
+  position: absolute;
+  right: 0;
+  top: 0;
+  width: 50%;
+  height: 50%;
+  transform-origin: 0% 100%;
+`
+const Div24 = styled.div`
+  background-color:black;
+  transform: rotate(250deg) skewY(-60deg); 
+  overflow: hidden;
+  position: absolute;
+  right: 0;
+  top: 0;
+  width: 50%;
+  height: 50%;
+  transform-origin: 0% 100%;
+`
+const Div25 = styled.div`
+    background-color: red;
+    transform: rotate(260deg) skewY(-60deg);
+    overflow: hidden;
+    position: absolute;
+    right: 0;
+    top: 0;
+    width: 50%;
+    height: 50%;
+    transform-origin: 0% 100%;
+`
+const Div26 = styled.div`
+  background-color: black;
+  transform: rotate(270deg) skewY(-60deg);
+  overflow: hidden;
+  position: absolute;
+  right: 0;
+  top: 0;
+  width: 50%;
+  height: 50%;
+  transform-origin: 0% 100%;
+`
+const Div27 = styled.div`
+  background-color:red;
+  transform: rotate(280deg) skewY(-60deg);
+  overflow: hidden;
+  position: absolute;
+  right: 0;
+  top: 0;
+  width: 50%;
+  height: 50%;
+  transform-origin: 0% 100%;
+`
+const Div28 = styled.div`
+  background-color: black;
+  transform: rotate(290deg) skewY(-60deg);
+  overflow: hidden;
+  position: absolute;
+  right: 0;
+  top: 0;
+  width: 50%;
+  height: 50%;
+  transform-origin: 0% 100%;
+`
+const Div29 = styled.div`
+  background-color: black;
+  transform: rotate(300deg) skewY(-60deg);
+  overflow: hidden;
+  position: absolute;
+  right: 0;
+  top: 0;
+  width: 50%;
+  height: 50%;
+  transform-origin: 0% 100%;
+`
+const Div30 = styled.div`
+  background-color: red;
+  transform: rotate(310deg) skewY(-60deg);
+  overflow: hidden;
+  position: absolute;
+  right: 0;
+  top: 0;
+  width: 50%;
+  height: 50%;
+  transform-origin: 0% 100%;
+`
+const Div31 = styled.div`
+  background-color: black;
+  transform: rotate(320deg) skewY(-60deg);
+  overflow: hidden;
+  position: absolute;
+  right: 0;
+  top: 0;
+  width: 50%;
+  height: 50%;
+  transform-origin: 0% 100%;
+`
+const Div32 = styled.div`
+  background-color:red;
+  transform: rotate(330deg) skewY(-60deg);
+  overflow: hidden;
+  position: absolute;
+  right: 0;
+  top: 0;
+  width: 50%;
+  height: 50%;
+  transform-origin: 0% 100%;
+`
+const Div33 = styled.div`
+  background-color: black;
+  transform: rotate(340deg) skewY(-60deg);
+  overflow: hidden;
+  position: absolute;
+  right: 0;
+  top: 0;
+  width: 50%;
+  height: 50%;
+  transform-origin: 0% 100%;
+`
+const Div34 = styled.div`
+  background-color: red;
+  transform: rotate(350deg) skewY(-60deg);
+  overflow: hidden;
+  position: absolute;
+  right: 0;
+  top: 0;
+  width: 50%;
+  height: 50%;
+  transform-origin: 0% 100%;
+`
+const Div35 = styled.div`
+  background-color:black;
+  transform: rotate(360deg) skewY(-60deg);
+  overflow: hidden;
+  position: absolute;
+  right: 0;
+  top: 0;
+  width: 50%;
+  height: 50%;
+  transform-origin: 0% 100%;
+  `
+  const Div36 = styled.div`
+  background-color:red;
+  transform: rotate(360deg) skewY(-60deg);
+  overflow: hidden;
+  position: absolute;
+  right: 0;
+  top: 0;
+  width: 50%;
+  height: 50%;
+  transform-origin: 0% 100%;
+  `
+  const Span1 = styled.span`
+        position: absolute;
+        left: -100%;
+        width: 200%;
+        height: 200%;
+        text-align: center;
+        display: block;
+        transform: skewY(60deg) rotate(5deg);
+        padding-top: 20px;
+        cursor: pointer;
+        color:white;
+        font-weight:400;
+        font-size:13px;
+        text-align:center;
+        `
+//       const WheelContainer = styled.div`
+//       position:relative;
+//       display:flex;
+//       align-items:center;
+//       justify-content:center;
+//       `
+      
+      
+
 
 export default Card
 

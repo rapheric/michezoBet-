@@ -115,7 +115,7 @@ const Footer: React.FC = () => {
         <div>
           <BlueButton> 
           <StyledSpan>
-            <StyledAnchor href="https://example.com" target="_blank">
+            <StyledAnchor href="https://virtual-games.virtustec.com/desktop-v4/default/assets/rules/en-GB/casinogame/how_to_play_casinogame_spin2win_deluxe_en-GB.pdf" target="_blank">
                 <FontAwesomeIcon icon={faQuestion} />
             </StyledAnchor>
             </StyledSpan>

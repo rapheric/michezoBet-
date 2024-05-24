@@ -1,9 +1,18 @@
-import React,{useState,createContext} from 'react';
+import React,{useState} from 'react';
 import styled from '@emotion/styled';
+import { keyframes} from '@emotion/react';
 import {  faArrowRotateRight, faRotateLeft ,faTrashCan} from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import Navbar from '../aside/Nav';
 import Stats from '../statistics/Stats';
+
+interface DivProps {
+        variant?: 'primary' | 'secondary';
+        blink:true | false;
+      }
+      interface ListProps {
+        blink:true | false;
+      }
 
 interface PlacedBet {
         Option: string;
@@ -16,6 +25,10 @@ interface CardProps {
         imageUrlO: string;
         imageUrlP: string;
         imageUrlBL: string;
+        imageUrlWin:string;
+        imageUrlLion:string;
+        imageUrlFire:string;
+        imageUrlCold:string;
       }
       interface DiamondProps {
         color: string;
@@ -24,12 +37,13 @@ interface CardProps {
       }
       
 
-export const BetContext = createContext< undefined>(undefined);
+// export const BetContext = createContext< undefined>(undefined);
 
-const Card: React.FC<CardProps>  = ({ imageUrlB,imageUrlG,imageUrlR,imageUrlO,imageUrlP,imageUrlBL}) => {
+const Card: React.FC<CardProps>  = ({ imageUrlB,imageUrlG,imageUrlR,imageUrlO,imageUrlP,imageUrlBL,imageUrlWin,imageUrlLion,imageUrlFire,imageUrlCold}) => {
         const [betAmount, setBetAmount] = useState<number>(10);
         // const [chipAmount, setChipAmount] = useState<number>(0);
         const [payoutAmount, setPayOutAmount] = useState<number>(0);
+        const [mouseOverOption, setMouseOverOption] = useState<string>('');
         const [placedBetAmount, setPlacedBetAmount] = useState<number>(0);
         const [selectedOption, setSelectedOption] = useState<string | null>(null);
         const [randomNumber, setRandomNumber] = useState<number | null>(null);
@@ -38,10 +52,20 @@ const Card: React.FC<CardProps>  = ({ imageUrlB,imageUrlG,imageUrlR,imageUrlO,im
         const [undoStack, setUndoStack] = useState<PlacedBet[]>([]);
         // const [redoStack, setRedoStack] = useState<Bet[][]>([]);
         const [placedBets, setPlacedBets] = useState<PlacedBet[]>([])
+        const [previousPlacedBets, setPreviousPlacedBets] = useState<PlacedBet[]>([])
         const [openOption, setOpenOption] = useState<boolean>(false);
-        const [creditOpenOption, setCreditOpenOption] = useState<boolean>(false)
+        const [creditOpenOption, setCreditOpenOption] = useState<boolean>(false);
         const [spinning, setSpinning] = useState(false);
+        const [generatedRandomNumbers, setGeneratedRandomNumbers] = useState<number[]>([]);
+        // const [isVisible, setIsVisible] = useState(true);
         // const [selectedImgOption, setSelectedImgOption] = useState<string | null>(null);
+
+        // useEffect(() => {
+        //         const timer = setTimeout(() => {
+        //           setIsVisible(false);
+        //         }, 5000);
+        //         return () => clearTimeout(timer);
+        //       }, []);
         
       
              const handleSelectOption = (option: string) => {
@@ -73,9 +97,11 @@ const Card: React.FC<CardProps>  = ({ imageUrlB,imageUrlG,imageUrlR,imageUrlO,im
                 const randomNumber = Math.floor(Math.random() * 37);
                 setTimeout(() => {
                  setRandomNumber(randomNumber);
-                setSpinning(false);
+                 setGeneratedRandomNumbers([...generatedRandomNumbers,randomNumber])
+                 setPreviousPlacedBets([...placedBets])
+                 setSpinning(false);
                 setOpenOption(false);
-                }, 3000);
+                }, 8000);
 
             
         // Determine if the user has won or lost based on the selected numbers, option, and generated random number
@@ -526,6 +552,8 @@ case 13:
             
 
         const setPlacedAmont = ()=>{
+                console.log('setPlacedAmont:', placedBets);
+                
                 let amount = 0;
                 placedBets.forEach(x=> {
                         amount += x.BetAmounts;
@@ -533,6 +561,35 @@ case 13:
 
                 setPlacedBetAmount(amount)
         }
+
+const getMouseOverImage = ()=>{
+        let img = imageUrlBL;
+        if(betAmount === 10){
+                img = imageUrlBL;
+               }
+
+               if(betAmount === 50){
+                       img = imageUrlR;
+               }
+
+               if(betAmount === 100){
+                       img = imageUrlG;
+               }
+
+               if(betAmount === 200){
+                       img = imageUrlO;
+               }
+               if(betAmount === 400){
+                       img = imageUrlB;
+               }
+
+               if(betAmount === 500){
+                       img = imageUrlP;
+               }
+               console.log('IMG:', img);
+               
+               return img;
+}
 
         const getDisplayImage = (option:string) =>  {
                 let betAmount = placedBets.slice().reverse().find(x=> x.Option === option)?.BetAmounts;
@@ -563,8 +620,16 @@ case 13:
                 
                 return img;
         }
+
+        const getBlinkState =(s:string) =>{
+                
+                return false;
+        }
         
-        
+        const handleMouseOverOrLeave = (n:string) => {
+                setMouseOverOption(n);
+        }
+
         const handleSelected = (option:string ) =>{
         handleSelectOption(option)
         placedBets.push({
@@ -603,182 +668,395 @@ case 13:
                 
               };
             
-        const redo = () => {
-                if (undoStack.length > 0) {
-                  const nextBets = undoStack.pop() as PlacedBet;
-                 placedBets.push(nextBets);
-                 setPlacedAmont();
-                }
-        console.log(placedBets);
+        const rebet = () => {
+                setPlacedBets([...previousPlacedBets])
+                setPlacedAmont();
               };
   return (
         <>
-   < Navbar randomNumber={randomNumber} result={result} />
+   < Navbar generatedRandomNumbers={generatedRandomNumbers} randomNumber={randomNumber} 
+   payoutAmount={payoutAmount} imageUrlFire={imageUrlFire}   imageUrlCold={imageUrlCold} />
    <Stats selectedOption={selectedOption}/>
          <>
     <CardWrapper>
     <CardContainer>
         <div>
-        <ZeroItem onClick={()=>handleSelected('zero')} >
-        <Diamond color="green" width={40} height={40} />
+        <ZeroItem  blink = { getBlinkState('3') } onClick={()=>handleSelected('zero')}
+         onMouseLeave={()=> handleMouseOverOrLeave('')} 
+         onMouseOver={() => handleMouseOverOrLeave('zero')} >
+         { (mouseOverOption === 'zero') && (<ImageH src={getMouseOverImage()}/>) }
+        { (randomNumber !== null && randomNumber === 0) ? (<ImageWin src={imageUrlWin}/>): 
+        (placedBets.findIndex(x=> x.Option === '0') !== -1) ? 
+        (<Image src={getDisplayImage('0')}/>):
+        <Diamond color="green" width={40} height={40} />}
          </ZeroItem>
         </div>
     <div>
         <ContainerStyles>
-            <ListStyles  onClick={()=>handleSelected('3')}>
-           { (placedBets.findIndex(x=> x.Option === '3') !==-1) ? (<Image src={getDisplayImage('3')}/>):3}
-                    
+            <ListStyles  blink = { getBlinkState('3') } variant="primary" onClick={()=>handleSelected('3')}
+             onMouseLeave={()=> handleMouseOverOrLeave('')} 
+             onMouseOver={() => handleMouseOverOrLeave('3')}>
+           {(mouseOverOption === '29') && (<ImageH src={getMouseOverImage()}/>) } 
+           { (randomNumber !== null && randomNumber === 3) ? (<ImageWin src={imageUrlWin}/>):
+            (placedBets.findIndex(x=> x.Option === '3') !==-1) ? (<Image src={getDisplayImage('3')}/>):3}
            </ListStyles>
-            <ListDark onClick={()=>handleSelected('6')} >
-            { (placedBets.findIndex(x=> x.Option === '6') !== -1) ? (<Image src={getDisplayImage('6')}/>):6}
-                    
-            </ListDark>
-            <ListStyles onClick={()=>handleSelected('9')} >
-            { (placedBets.findIndex(x=> x.Option === '9') !== -1) ? (<Image src={getDisplayImage('9')}/>):9}
+
+            <ListStyles  blink = { getBlinkState('6') } variant="secondary" onClick={()=>handleSelected('6')} 
+             onMouseLeave={()=> handleMouseOverOrLeave('')} 
+             onMouseOver={() => handleMouseOverOrLeave('32')}>
+             {(mouseOverOption === '32') && (<ImageH src={getMouseOverImage()}/>) } 
+            { (randomNumber !== null && randomNumber === 6) ? (<ImageWin src={imageUrlWin}/>):
+             (placedBets.findIndex(x=> x.Option === '6') !== -1) ? (<Image src={getDisplayImage('6')}/>):6}
             </ListStyles>
-            <ListStyles onClick={()=>handleSelected('12')} >
-            { (placedBets.findIndex(x=> x.Option === '12') !== -1) ? (<Image src={getDisplayImage('12')}/>):12}
+
+            <ListStyles   blink = { getBlinkState('9') }variant="primary" onClick={()=>handleSelected('9')}
+             onMouseLeave={()=> handleMouseOverOrLeave('')} 
+             onMouseOver={() => handleMouseOverOrLeave('9')} >
+             {(mouseOverOption === '9') && (<ImageH src={getMouseOverImage()}/>) } 
+            { (randomNumber !== null && randomNumber === 9) ? (<ImageWin src={imageUrlWin}/>): 
+            (placedBets.findIndex(x=> x.Option === '9') !== -1) ? (<Image src={getDisplayImage('9')}/>):9}
             </ListStyles>
-            <ListDark onClick={()=>handleSelected('15')} >
-            { (placedBets.findIndex(x=> x.Option === '15') !== -1) ? (<Image src={getDisplayImage('15')}/>):15}
-            </ListDark>
-            <ListStyles onClick={()=>handleSelected('18')}>
-            { (placedBets.findIndex(x=> x.Option === '18') !== -1) ? (<Image src={getDisplayImage('18')}/>):18}
+
+            <ListStyles  blink = { getBlinkState('12') } variant="primary" onClick={()=>handleSelected('12')} 
+             onMouseLeave={()=> handleMouseOverOrLeave('')} 
+             onMouseOver={() => handleMouseOverOrLeave('12')}>
+             {(mouseOverOption === '12') && (<ImageH src={getMouseOverImage()}/>) } 
+            {  (randomNumber !== null && randomNumber === 12) ? (<ImageWin src={imageUrlWin}/>):
+            (placedBets.findIndex(x=> x.Option === '12') !== -1) ? (<Image src={getDisplayImage('12')}/>):12}
             </ListStyles>
-            <ListStyles onClick={()=>handleSelected('21')} >
-            { (placedBets.findIndex(x=> x.Option === '21') !== -1) ? (<Image src={getDisplayImage('21')}/>):21}
+
+            <ListStyles  blink = { getBlinkState('15') } variant="secondary" onClick={()=>handleSelected('15')} 
+             onMouseLeave={()=> handleMouseOverOrLeave('')} 
+             onMouseOver={() => handleMouseOverOrLeave('15')}>
+             {(mouseOverOption === '15') && (<ImageH src={getMouseOverImage()}/>) } 
+            { (randomNumber !== null && randomNumber === 15) ? (<ImageWin src={imageUrlWin}/>):
+             (placedBets.findIndex(x=> x.Option === '15') !== -1) ? (<Image src={getDisplayImage('15')}/>):15}
             </ListStyles>
-             <ListDark onClick={()=>handleSelected('24')}>
-             { (placedBets.findIndex(x=> x.Option === '24') !== -1) ? (<Image src={getDisplayImage('24')}/>):24}
-            </ListDark>
-            <ListStyles onClick={()=>handleSelected('27')}>
-            { (placedBets.findIndex(x=> x.Option === '27') !== -1) ? (<Image src={getDisplayImage('27')}/>):27}
+
+            <ListStyles  blink = { getBlinkState('18') } variant="primary" onClick={()=>handleSelected('18')}
+             onMouseLeave={()=> handleMouseOverOrLeave('')} 
+             onMouseOver={() => handleMouseOverOrLeave('18')}>
+             {(mouseOverOption === '18') && (<ImageH src={getMouseOverImage()}/>) } 
+            { (randomNumber !== null && randomNumber === 18) ? (<ImageWin src={imageUrlWin}/>):
+             (placedBets.findIndex(x=> x.Option === '18') !== -1) ? (<Image src={getDisplayImage('18')}/>):18}
             </ListStyles>
-            <ListStyles onClick={()=>handleSelected('30')}>
-            { (placedBets.findIndex(x=> x.Option === '30') !== -1) ? (<Image src={getDisplayImage('30')}/>):30}
+
+            <ListStyles   blink = { getBlinkState('21') }variant="primary" onClick={()=>handleSelected('21')}
+             onMouseLeave={()=> handleMouseOverOrLeave('')} 
+             onMouseOver={() => handleMouseOverOrLeave('21')} >
+             {(mouseOverOption === '21') && (<ImageH src={getMouseOverImage()}/>) } 
+            {  (randomNumber !== null && randomNumber === 21) ? (<ImageWin src={imageUrlWin}/>):
+            (placedBets.findIndex(x=> x.Option === '21') !== -1) ? (<Image src={getDisplayImage('21')}/>):21}
             </ListStyles>
-            <ListDark onClick={()=>handleSelected('33')}>
-            { (placedBets.findIndex(x=> x.Option === '33') !== -1) ? (<Image src={getDisplayImage('33')}/>):33}
-            </ListDark>
-            <ListStyles onClick={()=>handleSelected('36')} >
-            { (placedBets.findIndex(x=> x.Option === '36') !== -1) ? (<Image src={getDisplayImage('36')}/>):36}
+
+             <ListStyles  blink = { getBlinkState('24') }variant="secondary" onClick={()=>handleSelected('24')}
+              onMouseLeave={()=> handleMouseOverOrLeave('')} 
+              onMouseOver={() => handleMouseOverOrLeave('24')}>
+              {(mouseOverOption === '24') && (<ImageH src={getMouseOverImage()}/>) } 
+             {  (randomNumber !== null && randomNumber === 24) ? (<ImageWin src={imageUrlWin}/>):
+             (placedBets.findIndex(x=> x.Option === '24') !== -1) ? (<Image src={getDisplayImage('24')}/>):24}
             </ListStyles>
-            <ListDark onClick={()=>handleSelected('2')}>
-            { (placedBets.findIndex(x=> x.Option === '2') !== -1) ? (<Image src={getDisplayImage('2')}/>):2}
-            </ListDark>
-            <ListStyles onClick={()=>handleSelected('5')}>
-            { (placedBets.findIndex(x=> x.Option === '5') !== -1) ? (<Image src={getDisplayImage('5')}/>):5}
+
+            <ListStyles  blink = { getBlinkState('27') }variant="primary" onClick={()=>handleSelected('27')}
+             onMouseLeave={()=> handleMouseOverOrLeave('')} 
+             onMouseOver={() => handleMouseOverOrLeave('27')}>
+             {(mouseOverOption === '27') && (<ImageH src={getMouseOverImage()}/>) } 
+            { (randomNumber !== null && randomNumber === 27) ? (<ImageWin src={imageUrlWin}/>):
+             (placedBets.findIndex(x=> x.Option === '27') !== -1) ? (<Image src={getDisplayImage('27')}/>):27}
             </ListStyles>
-            <ListDark onClick={()=>handleSelected('8')} >
-            { (placedBets.findIndex(x=> x.Option === '8') !== -1) ? (<Image src={getDisplayImage('8')}/>):8}
-            </ListDark>
-            <ListDark onClick={()=>handleSelected('11')} >
-            { (placedBets.findIndex(x=> x.Option === '11') !== -1) ? (<Image src={getDisplayImage('11')}/>):11}
-            </ListDark>
-            <ListStyles onClick={()=>handleSelected('14')} >
-            { (placedBets.findIndex(x=> x.Option === '14') !== -1) ? (<Image src={getDisplayImage('14')}/>):14}
+
+            <ListStyles  blink = { getBlinkState('30') } variant="primary"onClick={()=>handleSelected('30')}
+             onMouseLeave={()=> handleMouseOverOrLeave('')} 
+             onMouseOver={() => handleMouseOverOrLeave('30')}>
+             {(mouseOverOption === '30') && (<ImageH src={getMouseOverImage()}/>) } 
+            {  (randomNumber !== null && randomNumber === 30) ? (<ImageWin src={imageUrlWin}/>):
+             (randomNumber !== null && randomNumber === 36) ? (<ImageWin src={imageUrlWin}/>):
+             (placedBets.findIndex(x=> x.Option === '30') !== -1) ? (<Image src={getDisplayImage('30')}/>):30}
             </ListStyles>
-            <ListDark onClick={()=>handleSelected('17')}>
-            { (placedBets.findIndex(x=> x.Option === '17') !== -1) ? (<Image src={getDisplayImage('17')}/>):17}
-            </ListDark>
-            <ListDark onClick={()=>handleSelected('20')} >
-            { (placedBets.findIndex(x=> x.Option === '20') !== -1) ? (<Image src={getDisplayImage('20')}/>):20}
-            </ListDark>
-             <ListStyles onClick={()=>handleSelected('23')} >
-             { (placedBets.findIndex(x=> x.Option === '23') !== -1) ? (<Image src={getDisplayImage('23')}/>):23}
+
+            <ListStyles  blink = { getBlinkState('33') } variant="secondary" onClick={()=>handleSelected('33')}
+             onMouseLeave={()=> handleMouseOverOrLeave('')} 
+             onMouseOver={() => handleMouseOverOrLeave('33')}>
+             {(mouseOverOption === '33') && (<ImageH src={getMouseOverImage()}/>) } 
+            { (randomNumber !== null && randomNumber === 33) ? (<ImageWin src={imageUrlWin}/>):
+             (placedBets.findIndex(x=> x.Option === '33') !== -1) ? (<Image src={getDisplayImage('33')}/>):33}
             </ListStyles>
-            <ListDark onClick={()=>handleSelected('26')} >
-            { (placedBets.findIndex(x=> x.Option === '26') !== -1) ? (<Image src={getDisplayImage('26')}/>):26}
-            </ListDark>
-            <ListDark onClick={()=>handleSelected('29')} >
-            { (placedBets.findIndex(x=> x.Option === '29') !== -1) ? (<Image src={getDisplayImage('29')}/>):29}
-            </ListDark>
-            <ListStyles  onClick={()=>handleSelected('32')}>
-            { (placedBets.findIndex(x=> x.Option === '32') !== -1) ? (<Image src={getDisplayImage('32')}/>):32}
+
+            <ListStyles  blink = { getBlinkState('36') } variant="primary" onClick={()=>handleSelected('36')}
+             onMouseLeave={()=> handleMouseOverOrLeave('')} 
+             onMouseOver={() => handleMouseOverOrLeave('36')} >
+             {(mouseOverOption === '36') && (<ImageH src={getMouseOverImage()}/>) } 
+            {  (randomNumber !== null && randomNumber === 36) ? (<ImageWin src={imageUrlWin}/>):
+            (placedBets.findIndex(x=> x.Option === '36') !== -1) ? (<Image src={getDisplayImage('36')}/>):36}
             </ListStyles>
-            <ListDark onClick={()=>handleSelected('35')}>
-            { (placedBets.findIndex(x=> x.Option === '35') !== -1) ? (<Image src={getDisplayImage('35')}/>):35}
-            </ListDark>
-            <ListStyles onClick={()=>handleSelected('1')} >
-            { (placedBets.findIndex(x=> x.Option === '1') !== -1) ? (<Image src={getDisplayImage('1')}/>):1}
+
+            <ListStyles  blink = { getBlinkState('2') }variant="secondary" onClick={()=>handleSelected('2')}
+             onMouseLeave={()=> handleMouseOverOrLeave('')} 
+             onMouseOver={() => handleMouseOverOrLeave('2')}>
+            {(mouseOverOption === '2') && (<ImageH src={getMouseOverImage()}/>) } 
+            {  (randomNumber !== null && randomNumber === 2) ? (<ImageWin src={imageUrlWin}/>):
+            (placedBets.findIndex(x=> x.Option === '2') !== -1) ? (<Image src={getDisplayImage('2')}/>):2}
             </ListStyles>
-            <ListDark onClick={()=>handleSelected('4')} >
-            { (placedBets.findIndex(x=> x.Option === '4') !== -1) ? (<Image src={getDisplayImage('4')}/>):4}
-            </ListDark>
-            <ListStyles onClick={()=>handleSelected('7')}>
-            { (placedBets.findIndex(x=> x.Option === '7') !== -1) ? (<Image src={getDisplayImage('7')}/>):7}
+
+            <ListStyles  blink = { getBlinkState('5') } variant="primary" onClick={()=>handleSelected('5')}
+             onMouseLeave={()=> handleMouseOverOrLeave('')} 
+             onMouseOver={() => handleMouseOverOrLeave('5')}>
+             {(mouseOverOption === '5') && (<ImageH src={getMouseOverImage()}/>) } 
+            {  (randomNumber !== null && randomNumber === 5) ? (<ImageWin src={imageUrlWin}/>):
+            (placedBets.findIndex(x=> x.Option === '5') !== -1) ? (<Image src={getDisplayImage('5')}/>):5}
             </ListStyles>
-            <ListDark onClick={()=>handleSelected('10')}>
-            { (placedBets.findIndex(x=> x.Option === '10') !== -1) ? (<Image src={getDisplayImage('10')}/>):10}
-            </ListDark>
-            <ListDark onClick={()=>handleSelected('13')} >
-            { (placedBets.findIndex(x=> x.Option === '13') !== -1) ? (<Image src={getDisplayImage('13')}/>):13}
-            </ListDark>
-            <ListStyles onClick={()=>handleSelected('16')} >
-            { (placedBets.findIndex(x=> x.Option === '16') !== -1) ? (<Image src={getDisplayImage('16')}/>):16}
+
+            <ListStyles  blink = { getBlinkState('8') } variant="secondary" onClick={()=>handleSelected('8')} 
+             onMouseLeave={()=> handleMouseOverOrLeave('')} 
+             onMouseOver={() => handleMouseOverOrLeave('8')}>
+             {(mouseOverOption === '8') && (<ImageH src={getMouseOverImage()}/>) } 
+            {  (randomNumber !== null && randomNumber === 8) ? (<ImageWin src={imageUrlWin}/>):
+            (placedBets.findIndex(x=> x.Option === '8') !== -1) ? (<Image src={getDisplayImage('8')}/>):8}
             </ListStyles>
-            <ListStyles onClick={()=>handleSelected('19')} >
-            { (placedBets.findIndex(x=> x.Option === '19') !== -1) ? (<Image src={getDisplayImage('19')}/>):19}
+
+            <ListStyles  blink = { getBlinkState('11') } variant="secondary" onClick={()=>handleSelected('11')} 
+             onMouseLeave={()=> handleMouseOverOrLeave('')} 
+             onMouseOver={() => handleMouseOverOrLeave('11')}>
+             {(mouseOverOption === '11') && (<ImageH src={getMouseOverImage()}/>) } 
+            { (randomNumber !== null && randomNumber === 11) ? (<ImageWin src={imageUrlWin}/>):
+             (placedBets.findIndex(x=> x.Option === '11') !== -1) ? (<Image src={getDisplayImage('11')}/>):11}
             </ListStyles>
-             <ListDark  onClick={()=>handleSelected('22')}>
-             { (placedBets.findIndex(x=> x.Option === '22') !== -1) ? (<Image src={getDisplayImage('22')}/>):22}
-            </ListDark>
-            <ListStyles onClick={()=>handleSelected('25')}>
-            { (placedBets.findIndex(x=> x.Option === '25') !== -1) ? (<Image src={getDisplayImage('25')}/>):25}
+
+            <ListStyles  blink = { getBlinkState('14') } variant="primary" onClick={()=>handleSelected('14')}
+             onMouseLeave={()=> handleMouseOverOrLeave('')} 
+             onMouseOver={() => handleMouseOverOrLeave('14')} >
+             {(mouseOverOption === '14') && (<ImageH src={getMouseOverImage()}/>) } 
+            {  (randomNumber !== null && randomNumber === 14) ? (<ImageWin src={imageUrlWin}/>):
+            (placedBets.findIndex(x=> x.Option === '14') !== -1) ? (<Image src={getDisplayImage('14')}/>):14}
             </ListStyles>
-            <ListDark onClick={()=>handleSelected('28')} >
-            { (placedBets.findIndex(x=> x.Option === '28') !== -1) ? (<Image src={getDisplayImage('28')}/>):28}
-            </ListDark >
-            <ListDark onClick={()=>handleSelected('31')}>
-            { (placedBets.findIndex(x=> x.Option === '31') !== -1) ? (<Image src={getDisplayImage('31')}/>):31}
-            </ListDark>
-            <ListStyles onClick={()=>handleSelected('34')} >
-            { (placedBets.findIndex(x=> x.Option === '34') !== -1) ? (<Image src={getDisplayImage('34')}/>):34}
+
+            <ListStyles  blink = { getBlinkState('17') } variant="secondary" onClick={()=>handleSelected('17')}
+             onMouseLeave={()=> handleMouseOverOrLeave('')} 
+             onMouseOver={() => handleMouseOverOrLeave('17')}>
+            {(mouseOverOption === '17') && (<ImageH src={getMouseOverImage()}/>) } 
+            {  (randomNumber !== null && randomNumber === 17) ? (<ImageWin src={imageUrlWin}/>):
+            (placedBets.findIndex(x=> x.Option === '17') !== -1) ? (<Image src={getDisplayImage('17')}/>):17}
+            </ListStyles>
+
+            <ListStyles  blink = { getBlinkState('20') } variant="secondary" onClick={()=>handleSelected('20')}
+             onMouseLeave={()=> handleMouseOverOrLeave('')} 
+             onMouseOver={() => handleMouseOverOrLeave('20')} >
+             {(mouseOverOption === '20') && (<ImageH src={getMouseOverImage()}/>) } 
+            { (randomNumber !== null && randomNumber === 20) ? (<ImageWin src={imageUrlWin}/>): 
+            (placedBets.findIndex(x=> x.Option === '20') !== -1) ? (<Image src={getDisplayImage('20')}/>):20}
+            </ListStyles>
+
+             <ListStyles  blink = { getBlinkState('23') } variant="primary" onClick={()=>handleSelected('23')}
+              onMouseLeave={()=> handleMouseOverOrLeave('')} 
+              onMouseOver={() => handleMouseOverOrLeave('23')} >
+             {(mouseOverOption === '23') && (<ImageH src={getMouseOverImage()}/>) } 
+             { (randomNumber !== null && randomNumber === 23) ? (<ImageWin src={imageUrlWin}/>): 
+             (placedBets.findIndex(x=> x.Option === '23') !== -1) ? (<Image src={getDisplayImage('23')}/>):23}
+            </ListStyles>
+
+            <ListStyles   blink = { getBlinkState('26') }variant="secondary" onClick={()=>handleSelected('26')} 
+             onMouseLeave={()=> handleMouseOverOrLeave('')} 
+             onMouseOver={() => handleMouseOverOrLeave('26')}>
+            {(mouseOverOption === '26') && (<ImageH src={getMouseOverImage()}/>) } 
+            { (randomNumber !== null && randomNumber === 26) ? (<ImageWin src={imageUrlWin}/>): 
+            (placedBets.findIndex(x=> x.Option === '26') !== -1) ? (<Image src={getDisplayImage('26')}/>):26}
+            </ListStyles>
+
+            <ListStyles  blink = { getBlinkState('29') } variant="secondary" onClick={()=>handleSelected('29')} 
+             onMouseLeave={()=> handleMouseOverOrLeave('')} 
+             onMouseOver={() => handleMouseOverOrLeave('29')}>
+            { (mouseOverOption === '29') && (<ImageH src={getMouseOverImage()}/>) }
+            { (randomNumber !== null && randomNumber === 29) ? (<ImageWin src={imageUrlWin}/>): 
+            (placedBets.findIndex(x=> x.Option === '29') !== -1) ? (<Image src={getDisplayImage('29')}/>):29}
+            </ListStyles>
+
+            <ListStyles  blink = { getBlinkState('32') } variant="primary" onClick={()=>handleSelected('32')}
+             onMouseLeave={()=> handleMouseOverOrLeave('')} 
+             onMouseOver={() => handleMouseOverOrLeave('32')}>
+             {(mouseOverOption === '32') && (<ImageH src={getMouseOverImage()}/>) } 
+            { (randomNumber !== null && randomNumber === 32) ? (<ImageWin src={imageUrlWin}/>):
+             (placedBets.findIndex(x=> x.Option === '32') !== -1) ? (<Image src={getDisplayImage('32')}/>):32}
+            </ListStyles>
+
+            <ListStyles  blink = { getBlinkState('35') } variant="secondary" onClick={()=>handleSelected('35')}
+             onMouseLeave={()=> handleMouseOverOrLeave('')} 
+             onMouseOver={() => handleMouseOverOrLeave('35')}>
+            {(mouseOverOption === '35') && (<ImageH src={getMouseOverImage()}/>) } 
+            { (randomNumber !== null && randomNumber === 35) ? (<ImageWin src={imageUrlWin}/>): 
+            (placedBets.findIndex(x=> x.Option === '35') !== -1) ? (<Image src={getDisplayImage('35')}/>):35}
+            </ListStyles>
+
+            <ListStyles  blink = { getBlinkState('1') } variant="primary" onClick={()=>handleSelected('1')} 
+             onMouseLeave={()=> handleMouseOverOrLeave('')} 
+             onMouseOver={() => handleMouseOverOrLeave('1')}>
+              {(mouseOverOption === '1') && (<ImageH src={getMouseOverImage()}/>) } 
+            { (randomNumber !== null && randomNumber === 1) ? (<ImageWin src={imageUrlWin}/>): 
+            (placedBets.findIndex(x=> x.Option === '1') !== -1) ? (<Image src={getDisplayImage('1')}/>):1}
+            </ListStyles>
+
+            <ListStyles  blink = { getBlinkState('4') } variant="secondary" onClick={()=>handleSelected('4')} 
+             onMouseLeave={()=> handleMouseOverOrLeave('')} 
+             onMouseOver={() => handleMouseOverOrLeave('4')}>
+            {(mouseOverOption === '4') && (<ImageH src={getMouseOverImage()}/>) } 
+            {  (randomNumber !== null && randomNumber === 4) ? (<ImageWin src={imageUrlWin}/>):
+            (placedBets.findIndex(x=> x.Option === '4') !== -1) ? (<Image src={getDisplayImage('4')}/>):4}
+            </ListStyles>
+
+            <ListStyles  blink = { getBlinkState('7') }  variant="primary" onClick={()=>handleSelected('7')}
+             onMouseLeave={()=> handleMouseOverOrLeave('')} 
+             onMouseOver={() => handleMouseOverOrLeave('7')}>
+             {(mouseOverOption === '7') && (<ImageH src={getMouseOverImage()}/>) } 
+            {  (randomNumber !== null && randomNumber === 7) ? (<ImageWin src={imageUrlWin}/>):
+            (placedBets.findIndex(x=> x.Option === '7') !== -1) ? (<Image src={getDisplayImage('7')}/>):7}
+            </ListStyles>
+
+            <ListStyles  blink = { getBlinkState('10') } variant="secondary" onClick={()=>handleSelected('10')}
+             onMouseLeave={()=> handleMouseOverOrLeave('')} 
+             onMouseOver={() => handleMouseOverOrLeave('10')}>
+            {(mouseOverOption === '10') && (<ImageH src={getMouseOverImage()}/>) } 
+            { (randomNumber !== null && randomNumber === 10) ? (<ImageWin src={imageUrlWin}/>): 
+            (placedBets.findIndex(x=> x.Option === '10') !== -1) ? (<Image src={getDisplayImage('10')}/>):10}
+            </ListStyles>
+
+            <ListStyles  blink = { getBlinkState('13') } variant="secondary" onClick={()=>handleSelected('13')} 
+             onMouseLeave={()=> handleMouseOverOrLeave('')} 
+             onMouseOver={() => handleMouseOverOrLeave('13')}>
+             {(mouseOverOption === '13') && (<ImageH src={getMouseOverImage()}/>) } 
+            {  (randomNumber !== null && randomNumber === 13) ? (<ImageWin src={imageUrlWin}/>):
+            (placedBets.findIndex(x=> x.Option === '13') !== -1) ? (<Image src={getDisplayImage('13')}/>):13}
+            </ListStyles>
+
+            <ListStyles  blink = { getBlinkState('16') }  variant="primary" onClick={()=>handleSelected('16')}
+             onMouseLeave={()=> handleMouseOverOrLeave('')} 
+             onMouseOver={() => handleMouseOverOrLeave('16')} >
+            {(mouseOverOption === '16') && (<ImageH src={getMouseOverImage()}/>) } 
+            {  (randomNumber !== null && randomNumber === 16) ? (<ImageWin src={imageUrlWin}/>):
+            (placedBets.findIndex(x=> x.Option === '16') !== -1) ? (<Image src={getDisplayImage('16')}/>):16}
+            </ListStyles>
+
+            <ListStyles  blink = { getBlinkState('19') }variant="primary" onClick={()=>handleSelected('19')} 
+             onMouseLeave={()=> handleMouseOverOrLeave('')} 
+             onMouseOver={() => handleMouseOverOrLeave('19')}>
+             {(mouseOverOption === '19') && (<ImageH src={getMouseOverImage()}/>) } 
+            { (randomNumber !== null && randomNumber === 19) ? (<ImageWin src={imageUrlWin}/>): 
+            (placedBets.findIndex(x=> x.Option === '19') !== -1) ? (<Image src={getDisplayImage('19')}/>):19}
+            </ListStyles>
+
+             <ListStyles  blink = { getBlinkState('22') } variant="secondary" onClick={()=>handleSelected('22')}
+              onMouseLeave={()=> handleMouseOverOrLeave('')} 
+              onMouseOver={() => handleMouseOverOrLeave('22')}>
+              {(mouseOverOption === '22') && (<ImageH src={getMouseOverImage()}/>) } 
+             {  (randomNumber !== null && randomNumber === 22) ? (<ImageWin src={imageUrlWin}/>):
+             (placedBets.findIndex(x=> x.Option === '22') !== -1) ? (<Image src={getDisplayImage('22')}/>):22}
+            </ListStyles>
+
+            <ListStyles  blink = { getBlinkState('25') } variant="primary" onClick={()=>handleSelected('25')}
+             onMouseLeave={()=> handleMouseOverOrLeave('')} 
+             onMouseOver={() => handleMouseOverOrLeave('25')}>
+             {(mouseOverOption === '25') && (<ImageH src={getMouseOverImage()}/>) } 
+            { (randomNumber !== null && randomNumber === 25) ? (<ImageWin src={imageUrlWin}/>): 
+            (placedBets.findIndex(x=> x.Option === '25') !== -1) ? (<Image src={getDisplayImage('25')}/>):25}
+            </ListStyles>
+
+            <ListStyles  blink = { getBlinkState('28') }variant="secondary" onClick={()=>handleSelected('28')} 
+             onMouseLeave={()=> handleMouseOverOrLeave('')} 
+             onMouseOver={() => handleMouseOverOrLeave('28')}>
+            {(mouseOverOption === '28') && (<ImageH src={getMouseOverImage()}/>) } 
+            { (randomNumber !== null && randomNumber === 28) ? (<ImageWin src={imageUrlWin}/>):
+             (placedBets.findIndex(x=> x.Option === '28') !== -1) ? (<Image src={getDisplayImage('28')}/>):28}
+            </ListStyles >
+
+            <ListStyles variant="secondary"  blink = { getBlinkState('31') } onClick={()=>handleSelected('31')}
+             onMouseLeave={()=> handleMouseOverOrLeave('')} 
+             onMouseOver={() => handleMouseOverOrLeave('31')}>
+            {(mouseOverOption === '29') && (<ImageH src={getMouseOverImage()}/>) } 
+            { (randomNumber !== null && randomNumber === 31) ? (<ImageWin src={imageUrlWin}/>):
+             (placedBets.findIndex(x=> x.Option === '31') !== -1) ? (<Image src={getDisplayImage('31')}/>):31}
+            </ListStyles>
+
+            <ListStyles variant="primary"  blink = { getBlinkState('34') } onClick={()=>handleSelected('34')} 
+             onMouseLeave={()=> handleMouseOverOrLeave('')} 
+             onMouseOver={() => handleMouseOverOrLeave('34')}>
+             {(mouseOverOption === '34') && (<ImageH src={getMouseOverImage()}/>) } 
+            { (randomNumber !== null && randomNumber === 34) ? (<ImageWin src={imageUrlWin}/>):
+            (placedBets.findIndex(x=> x.Option === '34') !== -1) ? (<Image src={getDisplayImage('34')}/>):34}
             </ListStyles>
         </ContainerStyles>
         <ContainerStyles>
-            <ListItems onClick={()=>handleSelected('range12')}>
-           { (placedBets.findIndex(x=> x.Option === 'range12') !== -1) ? (<Image src={getDisplayImage('range12')}/>):' 1 ~ 12'}
+            <ListItems  blink = { getBlinkState('range12') } onClick={()=>handleSelected('range12')}
+             onMouseLeave={()=> handleMouseOverOrLeave('')} 
+             onMouseOver={() => handleMouseOverOrLeave('range12')}>
+            {(mouseOverOption === 'range12') && (<ImageH src={getMouseOverImage()}/>) } 
+           { (placedBets.findIndex(x=> x.Option === 'range12') !== -1) ?
+            (<Image src={getDisplayImage('range12')}/>):' 1 ~ 12'}
             </ListItems>
-            <ListItems onClick={()=>handleSelected('range1324')}>
-            { (placedBets.findIndex(x=> x.Option === 'range1324') !== -1) ? (<Image src={getDisplayImage('range1324')}/>):'13 ~ 24'} 
+            <ListItems blink = { getBlinkState('range1324') } onClick={()=>handleSelected('range1324')}
+             onMouseLeave={()=> handleMouseOverOrLeave('')} 
+             onMouseOver={() => handleMouseOverOrLeave('range1324')}>
+            {(mouseOverOption === 'range1324') && (<ImageH src={getMouseOverImage()}/>) } 
+            { (placedBets.findIndex(x=> x.Option === 'range1324') !== -1) ?
+             (<Image src={getDisplayImage('range1324')}/>):'13 ~ 24'} 
             </ListItems>
-            <ListItems  onClick={()=>handleSelected('range2536')}>
-            { (placedBets.findIndex(x=> x.Option === 'range2536') !== -1) ? (<Image src={getDisplayImage('range2536')}/>):'25 ~ 36'} 
+            <ListItems  blink = { getBlinkState('range2536') } onClick={()=>handleSelected('range2536')}
+             onMouseLeave={()=> handleMouseOverOrLeave('')} 
+             onMouseOver={() => handleMouseOverOrLeave('range2536')}>
+            {(mouseOverOption === 'range2536') && (<ImageH src={getMouseOverImage()}/>) } 
+            { (placedBets.findIndex(x=> x.Option === 'range2536') !== -1) ?
+             (<Image src={getDisplayImage('range2536')}/>):'25 ~ 36'} 
             </ListItems>
         </ContainerStyles>
     </div>
     <ButtonContainer>
-      <StyledButton onClick={redo}><FontAwesomeIcon icon={faArrowRotateRight} /></StyledButton>
+      <StyledButton onClick={rebet}><FontAwesomeIcon icon={faArrowRotateRight} /></StyledButton>
       <StyledButton onClick={()=>handleDouble}>x2</StyledButton>
       <StyledButton onClick={undo}><FontAwesomeIcon icon={faRotateLeft} /></StyledButton>
       <StyledButton onClick={deleteSelected}><FontAwesomeIcon icon={faTrashCan} /></StyledButton>
     </ButtonContainer>
     </CardContainer>
-    <div>
-    <ContainerStyles>
-            <NumberItems   onClick={()=>handleSelected('low')}>
+    <LionWrapper>
+    <Lion> <ImageLion src={imageUrlLion}/> </Lion>
+    <ContainerStylesd>
+            <NumberItems  blink = { getBlinkState('range2536') } onClick={()=>handleSelected('low')}
+           onMouseLeave={()=> handleMouseOverOrLeave('')} 
+           onMouseOver={() => handleMouseOverOrLeave('low')} >
+            {(mouseOverOption === 'low') && (<ImageH src={getMouseOverImage()}/>) } 
             { (placedBets.findIndex(x=> x.Option === 'low') !== -1) ? (<Image src={getDisplayImage('low')}/>):'LOW'}
             </NumberItems>
-            <NumberItems   onClick={()=>handleSelected('even')}>
+            <NumberItems  blink = { getBlinkState('range2536') }  onClick={()=>handleSelected('even')}
+            onMouseLeave={()=> handleMouseOverOrLeave('')} 
+            onMouseOver={() => handleMouseOverOrLeave('even')}>
+            {(mouseOverOption === 'even') && (<ImageH src={getMouseOverImage()}/>) } 
             { (placedBets.findIndex(x=> x.Option === 'even') !== -1) ? (<Image src={getDisplayImage('even')}/>):'EVEN'}
             </NumberItems>
-            <NumberItems  onClick={()=>handleSelected('red')}>
+            <NumberItems blink = { getBlinkState('range2536') } onClick={()=>handleSelected('red')}
+            onMouseLeave={()=> handleMouseOverOrLeave('')} 
+            onMouseOver={() => handleMouseOverOrLeave('red')}>
+            {(mouseOverOption === 'red') && (<ImageH src={getMouseOverImage()}/>) } 
             { (placedBets.findIndex(x=> x.Option === 'red') !== -1) ? (<Image src={getDisplayImage('red')}/>):
             (<Diamond color="red" width={45} height={45}/>)}
             </NumberItems>
-            <NumberItems onClick={()=>handleSelected('black')} >
+            <NumberItems blink = { getBlinkState('range2536') } onClick={()=>handleSelected('black')} 
+            onMouseLeave={()=> handleMouseOverOrLeave('')} 
+            onMouseOver={() => handleMouseOverOrLeave('black')}>
+            {(mouseOverOption === 'black') && (<ImageH src={getMouseOverImage()}/>) } 
             { (placedBets.findIndex(x=> x.Option === 'black') !== -1) ? (<Image src={getDisplayImage('black')}/>):
             (<Diamond color="black" width={45} height={45}/>)}
             </NumberItems>
-            <NumberItems  onClick={()=>handleSelected('odd')}>
+            <NumberItems blink = { getBlinkState('range2536') } onClick={()=>handleSelected('odd')}
+            onMouseLeave={()=> handleMouseOverOrLeave('')} 
+            onMouseOver={() => handleMouseOverOrLeave('odd')}>
+            {(mouseOverOption === 'odd') && (<ImageH src={getMouseOverImage()}/>) } 
             { (placedBets.findIndex(x=> x.Option === 'odd') !== -1) ? (<Image src={getDisplayImage('odd')}/>):'ODD'}
             </NumberItems>
-            <NumberItems   onClick={()=>handleSelected('high')} >
+            <NumberItems  blink = { getBlinkState('range2536') } onClick={()=>handleSelected('high')} 
+            onMouseLeave={()=> handleMouseOverOrLeave('')} 
+            onMouseOver={() => handleMouseOverOrLeave('high')}>
+            {(mouseOverOption === 'high') && (<ImageH src={getMouseOverImage()}/>) } 
             { (placedBets.findIndex(x=> x.Option === 'high') !== -1) ? (<Image src={getDisplayImage('high')}/>):'HIGH'}
             </NumberItems>
-        </ContainerStyles>
-    </div>
+        </ContainerStylesd>
+        <Lion> <ImageLionR src={imageUrlLion}/> </Lion>
+    </LionWrapper>
     </CardWrapper>
     <div/>
     <div>
@@ -818,7 +1096,7 @@ case 13:
    <ChildDivO
            onClick={() => setBetAmount(Number(200))}>
                 <Image src={imageUrlO}/>
-      </ChildDivO>
+  </ChildDivO>
      <Span>KSh200</Span>
    </InnerDiv>
    <InnerDiv>
@@ -853,24 +1131,6 @@ case 13:
    </RightDiv>
  </FooterContainer>
  </div>
- {/* displaying the odds instruction. use open Option */}
- {/* <>
- <CardWrapper>
-    <CardContainer>
-        <ZeroItem onClick={()=>handleSelected('zero')} >
-
-         </ZeroItem>
-        <ContainerStyles>
-           
-        </ContainerStyles>
-        <ContainerStyles>
-          
-        </ContainerStyles>
-    </CardContainer>
-    <ContainerStyles>
-    </ContainerStyles>
-</CardWrapper>
- </> */}
  </>
  {creditOpenOption &&
  <>
@@ -881,8 +1141,9 @@ case 13:
     </Container>
  </>
 }
+
 {openOption &&
-        <> 
+        <>
         <Wheel>
                 {spinning}
             <SpinnerButton  disabled={spinning}>
@@ -931,12 +1192,14 @@ case 13:
 </Wheel>
 </>
 }
-{
-        openOption &&
-        <>
-        
-        </>
- }
+{result
+}
+   
+                       {/* <div> {result === 'win' ?
+                <Won>
+                   'YOU WIN!' 
+                </Won>: <div></div>}</div> */}
+
  </>
  
 
@@ -945,13 +1208,65 @@ case 13:
   )
 }
 const Image = styled.img`
- object-fit:cover;
+//  object-fit:cover;
  overflow:hidden;
  object-repeat:no-repeat;
  width:40px;
  height:40px;
 `;
+const ImageH = styled.img`
+width:30px;
+ height:30px;
+position:absolute;
+right:-20%;
+bottom:-20%;
+z-index:2;
 
+`
+const ImageLion = styled.img`
+ object-fit:cover;
+//  overflow:hidden;
+ object-repeat:no-repeat;
+ width:60px;
+ height:60px;
+ background-color:brown;
+//   transform: rotate(180deg);
+`;
+const ImageLionR = styled.img`
+ object-fit:cover;
+//  overflow:hidden;
+ object-repeat:no-repeat;
+ width:60px;
+ height:60px;
+ background-color:brown;
+transform: scaleX(-1);
+`;
+const ImageWin = styled.img`
+object-fit:cover;
+ overflow:hidden;
+ object-repeat:no-repeat;
+ width:50px;
+ height:50px;
+`
+const Lion = styled.div`
+background-color:brown;
+ object-repeat:no-repeat;
+//  position: absolute;
+ width: 65px;
+ height: 84px;
+//  margin-top: 272px;
+ background: no-repeat;
+ opacity: .8;
+ overflow:hidden;
+`
+const LionWrapper = styled.div`
+display:flex;
+justify-content:center;
+align-items:center;
+gap:0;
+// margin-right:0 2px ;
+margin-top:opx;
+`
 const Title = styled.h1`
   margin: 0 0 20px;
   font-size: 20px;
@@ -978,7 +1293,9 @@ const Buttonn = styled.button`
     background-color: #0056b3;
   }
 `;
-const ListStyles = styled.li`
+const ListStyles = styled.li<DivProps>`
+   position:relative;
+   background-color: ${({ variant }) => (variant === 'primary' ? 'red' : 'black')};
   display: flex;
   align-items: center;
   justify-content: center;
@@ -986,36 +1303,46 @@ const ListStyles = styled.li`
   margin:0px;
   width :50px;
   height: 50px;
-  background-color:red;
-  font-size: 20px;
+  font-size: 28px;
+  font-weight:500;
   list-style:none;
   border: 2px solid white;
   margin-left:0px;
+  ${({ blink }) => (blink ? 
+        ` animation: blink-animation 1s steps(5, start) infinite;
+       
+       @keyframes blink-animation {
+         to {
+           background:gray;
+         }
+       }`
+         : ``)}
   &:hover {
     border:2px solid yellow;
     background-color:#A9A9A9;
   }
 `;
 
-const ListDark = styled.li`
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  color:white;
+const ContainerStylesd = styled.div`
+font-family: Arial, sans-serif;
+//   display:flex;
+//   flex-wrap: wrap;
+//   align-items:center;
+//   justify-content: center;
+  margin-top:20px;
+  width:100%;
+  max-width:680px;
+  margin-bottom:0px;
   margin:0px;
-  width :50px;
-  height: 50px;
-  background-color:black;
-  font-size: 20px;
-  list-style:none;
-  border: 2px solid white;
+  padding:0px;
   margin-left:0px;
-  &:hover {
-    border:2px solid yellow;
-    background-color:gray;
-  }
-`;
-
+  gap:0px;
+  display: grid;
+  grid-template-columns: repeat(6, 1fr); /* Creates six equal columns */
+//   gap: 10px; /* Optional: adds space between the grid items */
+  width: 100%; /* Ensure the container takes the full width */
+  box-sizing: border-box;
+`
 const ContainerStyles = styled.ul`
   font-family: Arial, sans-serif;
   display:flex;
@@ -1028,10 +1355,16 @@ const ContainerStyles = styled.ul`
   margin:0px;
   padding:0px;
   margin-left:0px;
+//   gap:0px;
+//   display: grid;
+//   grid-template-columns: repeat(6, 1fr); /* Creates six equal columns */
+//   gap: 10px; /* Optional: adds space between the grid items */
+//   width: 100%; /* Ensure the container takes the full width */
+  box-sizing: border-box;
 `;
 
 
-const ListItems = styled.li`
+const ListItems = styled.li<ListProps>`
   display: flex;
   align-items: center;
   justify-content: center;
@@ -1043,6 +1376,16 @@ const ListItems = styled.li`
   margin-top:0px;
   margin:0px;
   border: 2px solid white;
+   ${({ blink }) => (blink ? 
+   ` animation: blink-animation 1s steps(5, start) infinite;
+  
+  @keyframes blink-animation {
+    to {
+      background:gray;
+    }
+  }`
+    : ``)}
+   
   &:hover {
     border:2px solid yellow;
     background-color:#A9A9A9;
@@ -1050,10 +1393,10 @@ const ListItems = styled.li`
   }
 `;
 
-const ZeroItem = styled.li`
+const ZeroItem = styled.li<ListProps>`
 position :relative;
   display: flex;
-  align-items: center;
+  align-items: flex-start;
   justify-content: center;
   color:white;
   width : 50px;
@@ -1066,6 +1409,15 @@ position :relative;
   gap:0px;
   margin-right:0px;
   border: 2px solid white;
+   ${({ blink }) => (blink ? 
+        ` animation: blink-animation 1s steps(5, start) infinite;
+       
+       @keyframes blink-animation {
+         to {
+           background:gray;
+         }
+       }`
+         : ``)}
   &:hover {
     border:2px solid yellow;
     background-color:#A9A9A9;
@@ -1078,6 +1430,7 @@ justify-content:center;
 width:100%;
 max-width:900px;
 position:relative;
+margin-bottom:20px;
 `
 const ButtonContainer = styled.div`
 display:flex;
@@ -1086,27 +1439,41 @@ justify-content:space-between;
 align-items:center;
 `
 const CardWrapper = styled.div`
+//     background-color: rgb(127, 126, 126);
+//     min-width: 1000px;
+//     margin: 0px;
 display:flex;
 justify-content:center;
 flex-direction:column;
 align-items:center;
-gap:30px;
+gap:8px;
 margin-right:0px;
 position:relative;
+margin-bottom:20px;
 `
-const NumberItems = styled.li`
+const NumberItems = styled.li<ListProps>`
    position :relative;
   display: flex;
   align-items: center;
   justify-content: center;
-  color:white;
-  width :104px;
-  height: 45px;
-  font-size: 20px;
+  color: #fff;
+  width :106px;
+  height: 53px;
+  font-size: px;
+  font-weight:500;
   list-style:none;
   margin-top:0px;
   margin:0px;
   border: 2px solid white;
+   ${({ blink }) => (blink ? 
+        ` animation: blink-animation 1s steps(5, start) infinite;
+       
+       @keyframes blink-animation {
+         to {
+           background:gray;
+         }
+       }`
+         : ``)}
   &:hover {
     border:2px solid yellow;
     background-color:#A9A9A9;
@@ -1115,30 +1482,50 @@ const NumberItems = styled.li`
 const Diamond = styled.div<DiamondProps>`
   width: ${({ width }) => width}px;
   height: ${({ height }) => height}px;
+  width: 100%;
+    height: 100%;
   background-color: ${({ color }) => color};
   position: absolute;
 //   top: 50%;
 //   left: 50%;
-  tranform-origin:0 100%;
-  transform: translate(-50%, -50%); 
-  transform:rotateX(45deg) rotateZ(45deg);
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-  margin:2px;
+//   tranform-origin:0 100%;
+//   transform: translate(-50%, -50%); 
+//   transform:rotateX(45deg) rotateZ(45deg);
+//   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+//   margin:2px;
+clip-path: polygon(50% 10%, 85% 50%, 50% 90%, 15% 50%);
+// background-color: #1f1f1f;
+
 `;
 // Styled button component
 const StyledButton = styled.button`
-  padding: 12px 12px;
-  font-weight:bold;
-  margin: 5px;
-  border: none;
-  border-radius: 50%;
-  font-size: 13px;
+//   padding: 12px 12px;
+//   font-weight:bold;
+//   margin: 5px;
+//   border: none;
+//   border-radius: 50%;
+//   font-size: 13px;
+//   cursor: pointer;
+//   background-color:#AD5765 ;
+//   color:white;
+//   &:hover {
+//     background-color: #F4E5E8;
+//   }
+
+  position: relative;
+  z-index: 1;
+  width: 36px;
+  height: 36px;
+  margin-bottom: 12px;
+  font-size: 14px;
+  font-weight: 700;
+//   color: #1967ff;
+  text-transform: none;
   cursor: pointer;
-  background-color:#AD5765 ;
-  color:white;
-  &:hover {
-    background-color: #F4E5E8;
-  }
+//   background-color: #fff;
+  border-radius: 20px;
+//   -webkit-box-shadow: 0 0 5px 0 rgba(0, 0, 0, .1), 0 5px 5px 0 rgba(0, 0, 0, .2);
+  box-shadow: 0 0 5px 0 rgba(0, 0, 0, .1), 0 5px 5px 0 rgba(0, 0, 0, .2);
 `;
 
 const FooterContainer = styled.footer`
@@ -1149,7 +1536,7 @@ const FooterContainer = styled.footer`
   padding: 10px;
   color: #fff;
   background-color: #013b93;
-  margin-top:40px;
+  margin-top:20px;
 `;
 
 const BalanceAmount = styled.div`
@@ -1319,6 +1706,14 @@ const Container = styled.div`
   top:10%;
   left:40%;
 `;
+const spin = keyframes`
+        0% {
+                transform: rotate(0deg);
+              }
+              100% {
+                transform: rotate(360deg);
+              }
+`;
 const Wheel = styled.div`
         position: relative;
         width: 400px;
@@ -1332,7 +1727,23 @@ const Wheel = styled.div`
         top:10%;
         left:35%;
         z-index:2;
+        animation: ${spin} 2s infinite;
 `;
+// const Won = styled.div`
+//         position: relative;
+//         width: 400px;
+//         height: 400px;
+//         margin:1em auto;
+//         border: 2px solid whitesmoke;
+//         padding: 0;
+//         border-radius: 50%;
+//         overflow: hidden;     
+//         position:absolute;
+//         top:10%;
+//         left:35%;
+//         z-index:3;
+// `;
+
 
 // const SNumber = styled.div <{ variant: 'primary' | 'secondary' }> `
 //     ${({ variant }) =>
@@ -1382,8 +1793,8 @@ const SpinnerButton = styled.button`
     border: 2px solid #007bff;
 `;
 const Div0 = styled.div`
-  background-color:green;
-  transform: rotate(10deg) skewY(-60deg);
+  background-color:blue;
+  transform: rotate(0deg) skewY(-60deg);
   overflow: hidden;
   position: absolute;
   right: 0;
@@ -1682,7 +2093,7 @@ const Div26 = styled.div`
 `
 const Div27 = styled.div`
   background-color:red;
-  transform: rotate(280deg) skewY(-60deg);
+  transform: rotate(279deg) skewY(-60deg);
   overflow: hidden;
   position: absolute;
   right: 0;
@@ -1693,7 +2104,7 @@ const Div27 = styled.div`
 `
 const Div28 = styled.div`
   background-color: black;
-  transform: rotate(290deg) skewY(-60deg);
+  transform: rotate(288deg) skewY(-60deg);
   overflow: hidden;
   position: absolute;
   right: 0;
@@ -1704,7 +2115,7 @@ const Div28 = styled.div`
 `
 const Div29 = styled.div`
   background-color: black;
-  transform: rotate(300deg) skewY(-60deg);
+  transform: rotate(297deg) skewY(-60deg);
   overflow: hidden;
   position: absolute;
   right: 0;
@@ -1715,7 +2126,7 @@ const Div29 = styled.div`
 `
 const Div30 = styled.div`
   background-color: red;
-  transform: rotate(310deg) skewY(-60deg);
+  transform: rotate(306deg) skewY(-60deg);
   overflow: hidden;
   position: absolute;
   right: 0;
@@ -1726,7 +2137,7 @@ const Div30 = styled.div`
 `
 const Div31 = styled.div`
   background-color: black;
-  transform: rotate(320deg) skewY(-60deg);
+  transform: rotate(315deg) skewY(-60deg);
   overflow: hidden;
   position: absolute;
   right: 0;
@@ -1737,7 +2148,7 @@ const Div31 = styled.div`
 `
 const Div32 = styled.div`
   background-color:red;
-  transform: rotate(330deg) skewY(-60deg);
+  transform: rotate(324deg) skewY(-60deg);
   overflow: hidden;
   position: absolute;
   right: 0;
@@ -1748,7 +2159,7 @@ const Div32 = styled.div`
 `
 const Div33 = styled.div`
   background-color: black;
-  transform: rotate(340deg) skewY(-60deg);
+  transform: rotate(333deg) skewY(-60deg);
   overflow: hidden;
   position: absolute;
   right: 0;
@@ -1759,7 +2170,7 @@ const Div33 = styled.div`
 `
 const Div34 = styled.div`
   background-color: red;
-  transform: rotate(350deg) skewY(-60deg);
+  transform: rotate(342deg) skewY(-60deg);
   overflow: hidden;
   position: absolute;
   right: 0;
@@ -1770,7 +2181,7 @@ const Div34 = styled.div`
 `
 const Div35 = styled.div`
   background-color:black;
-  transform: rotate(360deg) skewY(-60deg);
+  transform: rotate(351deg) skewY(-60deg);
   overflow: hidden;
   position: absolute;
   right: 0;
@@ -1780,7 +2191,7 @@ const Div35 = styled.div`
   transform-origin: 0% 100%;
   `
   const Div36 = styled.div`
-  background-color:red;
+  background-color:green;
   transform: rotate(360deg) skewY(-60deg);
   overflow: hidden;
   position: absolute;
@@ -1805,13 +2216,33 @@ const Div35 = styled.div`
         font-size:13px;
         text-align:center;
         `
+        // const Won = styled.div`
+        //         // position: relative;
+        //         width: 400px;
+        //         height: 400px;
+        //         margin:1em auto;
+        //         border: 2px solid whitesmoke;
+        //         padding: 0;
+        //         border-radius: 50%;
+        //         overflow: hidden;     
+        //         position:absolute;
+        //         top:10%;
+        //         left:35%;
+        //         z-index:3;
+        //         background-color:green;
+        //         display:flex;
+        //         align-items:center;
+        //         justify-content:center;
+        //         color:purple;
+        // `;
 //       const WheelContainer = styled.div`
 //       position:relative;
 //       display:flex;
 //       align-items:center;
 //       justify-content:center;
 //       `
-      
+      // Define the keyframes for the animation
+
       
 
 

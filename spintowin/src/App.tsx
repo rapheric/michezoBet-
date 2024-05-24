@@ -8,6 +8,10 @@ import imageUrlG from './assets/green.png';
 import imageUrlB from './assets/blue.png';
 import imageUrlP from './assets/purple.png';
 import imageUrlO from './assets/orange.png';
+import imageUrlLion from './assets/lionss.svg';
+import imageUrlWin from './assets/spin2win-dolly (3).svg';
+import imageUrlFire from './assets/download.svg';
+import imageUrlCold from './assets/download (1).svg';
 const App = () => {
  return (
   <AppContainer>
@@ -16,13 +20,17 @@ const App = () => {
             imageUrlG={imageUrlG} 
             imageUrlBL={imageUrlBL} 
             imageUrlP={imageUrlP} 
-            imageUrlO={imageUrlO}  />
+            imageUrlO={imageUrlO} 
+            imageUrlLion={imageUrlLion} 
+            imageUrlWin={imageUrlWin}
+            imageUrlFire={imageUrlFire}
+            imageUrlCold= {imageUrlCold}/>
     <Footer/>
   </AppContainer>
   );
 };
 const AppContainer = styled.div`
-  width: 900px;
+  width: 1000px;
   margin: 0 auto;
   padding: 20px;
   background-color:brown;

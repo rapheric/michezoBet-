@@ -1,37 +1,40 @@
 import React from 'react';
 import styled from '@emotion/styled';
 
-// interface NavIcon{
-//   imageUrlFire:string;
-// }
+interface GenProps{
+  backGroundColor: string ;
+}
 interface NavProps {
-  randomNumber: number | null;
   // result: string | null;
   imageUrlFire: string;
-  payoutAmount: number | null;
   generatedRandomNumbers: Array<number>
   imageUrlCold:string;
 }
-const Navbar: React.FC<NavProps> = ({ randomNumber, imageUrlFire, payoutAmount, generatedRandomNumbers,imageUrlCold }) => {
-  // const[optionVisible, setOptionVisible] = useState<boolean>(false)
-  // useEffect(() => {
-  //   const timer = setTimeout(() => {
-  //     setOptionVisible(true)
-  //   }, 2000); // 2-second delay
-  //   setOptionVisible(false)
-  //   return () => clearTimeout(timer);
+const Navbar: React.FC<NavProps> = ({ imageUrlFire, generatedRandomNumbers,imageUrlCold }) => {
 
-  // }, []);
+  const changeBackground = (n:number) =>{
+    const blackNumbers = [2,4,6,8,10,11,13,15,17,20,22,24,26,28,29,31,33,35];
+    const redNumbers = [1,3,5,7,9,12,14,16,18,19,21,23,25,27,30,32,34,36];
+    if(blackNumbers.includes(n)){
+      return "black";
+    }
+    if(redNumbers.includes(n)){
+      return "red"
+    }
+   
+    return "green"
+  }
+
   return (
 
     <NavbarContainer>
       
       <NavItemOne>
-      {randomNumber !== null?
+      {generatedRandomNumbers.length>0 ?
          generatedRandomNumbers.map((n) => (
-        <GenDiv> 
+        <GenRandom backGroundColor={changeBackground(n)}> 
         {n}
-        </GenDiv>
+        </GenRandom>
       )) : <div>statistics not available yet..</div>
       }
       </NavItemOne>
@@ -63,33 +66,39 @@ const NavbarContainer = styled.nav`
   background-color:brown;
   color: #fff;
   padding: 2px 2px;
-  width:100%;
-  max-width:920px;
+  // width:100%;
+  top:0px;
+  max-width:940px;
   max-height:40px;
   height:100%;
   margin-bottom:30px;
-  margin-top:0px;
+  margin-top:-66px;
   box-shadow:border-box;
   box-shadow: 0 8px 10px rgba(0, 0, 0, 0.1), 0 6px 20px rgba(0, 0, 0, 0.1);
   outline-offset: -2px;
 `;
 
-
 const NavItemOne = styled.div`
-  cursor: pointer;
+//   cursor: pointer;
   display:flex;
   align-items:center;
- justify-content:center;
-  // padding: 4px 7px;
-  border-radius: 5px;
-  height:42px;
-  transition: background-color 0.3s ease;
-  // position: relative;
-  // height: 100%;
-  margin-left: 20px;
-  text-transform: initial;
-  font-family: Roboto;
-  font-size: 13px;
+//  justify-content:center;
+//   // padding: 4px 7px;
+//   border-radius: 5px;
+//   height:42px;
+//   transition: background-color 0.3s ease;
+//   // position: relative;
+//   // height: 100%;
+//   margin-left: 20px;
+//   text-transform: initial;
+//   font-family: Roboto;
+//   font-size: 13px;
+//   width:600px;
+width: 608px;
+height: 42px;
+padding-left: 6px;
+font-family: Adamina;
+border-radius: 3px;
 `;
 const ParentDivS = styled.div`
   display: flex;
@@ -99,8 +108,10 @@ const ParentDivS = styled.div`
   // background-color: light blue;
   // width:180px;
   // border-radius:5px;
-  width: 175px;
-  height: 42px;
+  position: relative;
+  width: 176px;
+  height: 39px;
+  padding: 2px;
   margin-right: 3px;
   color: #005383;
   background: -webkit-gradient(linear, left top, left bottom, from(#7eccff), to(#d3fffc));
@@ -120,8 +131,10 @@ const ParentDiv = styled.div`
 //   width:180px;
 //   border-radius:5px;
 //   // padding:5px 7px;
-   width: 175px;
-    height: 42px;
+position: relative;
+width: 176px;
+height: 39px;
+padding: 2px;
     padding-left: 9px;
     background: -webkit-gradient(linear, left top, left bottom, from(rgba(0, 24, 59, 0)), color-stop(55.08%, #ff3131), to(#ff7e31));
     background: linear-gradient(180deg, rgba(0, 24, 59, 0) 0, #ff3131 55.08%, #ff7e31 100%);
@@ -177,19 +190,6 @@ const StatsDiv = styled.div`
   box-shadow: 0 1px 8px 0 rgba(0, 0, 0, .5);
   `;
 
-// const StatsDivL= styled.div`
-// width: 28px;
-// height: 25px;
-// padding:1px;
-// border-radius: 50%;
-// background-color: orange;
-// margin: 2px;
-// display:flex;
-// justify-content:center;
-// align-items:center;
-// font-size:16px;
-// font-weight:500;
-// `;
 const StatImage = styled.img`
   // background-image: none;
   // width: 100%; 
@@ -214,18 +214,20 @@ width: 352px;
  height: 42px;
  font-family: Adamina;
 `
-const GenDiv = styled.div`
+const GenRandom = styled.div<GenProps>`
 width:30px;
 height:30px;
 padding:3px;
 color:white;
-background-color:black;
+//background-color:black;
 font-size:16px;
 font-weight:500;
 display:flex;
 justify-content:center;
 align-items:center;
 border-radius:5px;
+margin-right:3px;
+background-color:${(props) => (props.backGroundColor)};
 `
 // const Won = styled.div`
 //         // position: relative;

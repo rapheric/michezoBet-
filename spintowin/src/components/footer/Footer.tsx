@@ -4,18 +4,25 @@ import {faQuestion,faDollarSign,faChartSimple} from '@fortawesome/free-solid-svg
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
 const OuterDiv = styled.div`
-  border: 1px solid #ccc;
-  padding: 3px;
+  // border: 1px solid #ccc;
+  // padding: 3px;
   display:flex;
   justify-content:space-between;
   align-items:center;
-  height:30px;
-  margin:0px;
+  width:961px;
+  height:28px;
+  // margin:0px;
   font-family: Roboto;
   font-size: 13px;
-  background-color: blue;
   color:white;
-  margin-bottom:0px;
+  margin-bottom:-67px;
+    background-color: #013b93;
+
+    @media (max-width: 768px) {
+      padding: 10px;
+      font-size: 0.9rem;
+    }
+}
 `;
 
 const FirstCol = styled.div`
@@ -52,54 +59,49 @@ const ThirdCol = styled.div`
 `
 
 const BlueButton = styled.button`
-  background-color: #007bff;
   color: #fff;
-  padding: 10px 10px;
-  border: none;
-  border-radius: 5px;
-  margin-right: 2px;
-  width:60px;
-  height:35px;
+  width:58px;
+  height: 24px;
+  margin-left: 3px;
+  font-size: 12px;
+  cursor: pointer;
+  background-color: #1967ff;
+  border-radius: 2px;
+  border:none;
 `;
 const StyledAnchor = styled.a`
-height: 26px;;
- width:26px;
- radius:50%;
-margin-left: 3px;
-color:white;
+    // font-style: normal;
+    // font-weight: 400;
+margin: auto;
 font-size: 12px;
+height: 12px;;
+ width:12px;
+//  border-radius:50%;
+// margin-left: 3px;
+color:gray;
+// font-size: 12px;
 cursor: pointer;
-background-color: #1967ff;
-border-radius: 2px;
+background-color: white;
+// border-radius: 20px;
 &:hover {
     background-color: gray;  
 }
 `
  const StyledSpan = styled.span`
-    font-family: icons-system;
-    font-style: normal;
-    font-weight: 00;
-    font-variant: normal;
+    box-sizing: border-box;
+    width:12px;
+    height: 12px;
+    margin-left: 3px;
+    font-size: 12px;
     cursor: pointer;
-    text-transform: none;
-    line-height: 1;
-    height:20px;
-    width:20px;
-    border-radius:50%;
- `
- const BtnSpan = styled.button`
+    background-color: #1967ff;
+    border-radius: 2px;
     font-family: icons-system;
     font-style: normal;
     font-weight: 400;
     font-variant: normal;
+    cursor: pointer;
     text-transform: none;
-    line-height: 1;   
-    width:60px;
-    background-color:blue;
-    color:white;
-    border:none;
-    outline:none;
-    height:35px;
  `
 
 const Footer: React.FC = () => {
@@ -121,7 +123,7 @@ const Footer: React.FC = () => {
             </StyledSpan>
           </BlueButton>
           <BlueButton><StyledSpan><FontAwesomeIcon icon={faDollarSign} /></StyledSpan></BlueButton>
-          <BtnSpan><FontAwesomeIcon icon={faChartSimple} /></BtnSpan>
+          <BlueButton><FontAwesomeIcon icon={faChartSimple} /></BlueButton>
         </div>
       </ThirdCol>
     </OuterDiv>

@@ -1,6 +1,9 @@
 body{
     margin: 0; 
     padding: 0;   
+    display: flex;
+    align-items: center;
+    justify-content: center;
     font-family: Arial, sans-serif;
     background-image:url("https://thumbs.dreamstime.com/b/spin-fortune-playing-roulette-wheel-casino-generative-ai-take-feel-excitement-game-chance-selective-focus-close-276403450.jpg");
 }

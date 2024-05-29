@@ -60,7 +60,6 @@ const SpinnerWheel: React.FC<WheelProps> = ({currentNumber,randomNumber}) => {
     numbers.forEach((num, index) => {
       const startAngle = index * anglePerSegment;
       const endAngle = startAngle + anglePerSegment;
-
       ctx.beginPath();
       ctx.moveTo(centerX, centerY);
       ctx.arc(centerX, centerY, radius, startAngle, endAngle);
@@ -73,7 +72,7 @@ const SpinnerWheel: React.FC<WheelProps> = ({currentNumber,randomNumber}) => {
 
       ctx.save();
       ctx.translate(centerX, centerY);
-      ctx.rotate(startAngle + anglePerSegment / 2+ Math.PI / 2);
+      ctx.rotate(startAngle + anglePerSegment);
       ctx.textAlign = 'start';
       ctx.fillStyle = 'white';
       ctx.font = '14px Arial ';
@@ -89,15 +88,11 @@ const SpinnerWheel: React.FC<WheelProps> = ({currentNumber,randomNumber}) => {
       if (context) {
         context.clearRect(0, 0, canvas.width, canvas.height);
         drawWheel(context);
+        setAngle(angle);
       }
     }
   }, [angle]);
-
-  const handleSpin = () => {
-    const randomAngle = Math.floor(Math.random() * 360) + 720;
-    setAngle(randomAngle);
-  };
-
+  
   return (
     <Wrapper>
       <WheelWrapper>
@@ -117,15 +112,12 @@ const spin = keyframes`
                 transform: rotate(360deg);
               }
 `;
+
 const Wrapper = styled.div`
-//   display: flex;
-//   flex-direction: column;
-//   align-items: center;
 position: absolute;
-top:10%;
-left:30%;
+top:8%;
+left:20%;
 z-index:3;
-// animation: ${spin} 2s infinite;
 animation: ${spin} 2s linear infinite;
 
 @media (max-width: 768px) {
@@ -141,17 +133,16 @@ const WheelWrapper = styled.div`
 `;
 
 const Pointer = styled.div`
-  position: absolute;
-  top: -30px;
+  position: absolute ;
+  top: 40%;
   left: 50%;
-  transform: translateX(-50%);
   width: 10;
   height: 10;
   border-left: 10px solid transparent;
   border-right: 10px solid transparent;
   border-bottom: 20px solid red;
-  // transform: translate(-50%, -100%);
-  z-index: 4;
+  transform: translate(-100%,-50%);
+  z-index: 3;
 `;
 
 const Button = styled.button`

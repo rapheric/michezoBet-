@@ -1,17 +1,20 @@
 import React from 'react';
 import styled from '@emotion/styled';
-import Card from './components/Card/Card';
+import Main from './components/main/Main';
 
 const App:React.FC = () => {
  return (
   <AppContainer>
-   <Card/>
+   <Main/>
   </AppContainer>
   );
 };
 
 const AppContainer = styled.div`
-// position: relative;
+position:absolute;
+top:40px;
+left:170px;;
+margin-right:200px;
 display:flex;
 align-items:center;
 justify-content:center;

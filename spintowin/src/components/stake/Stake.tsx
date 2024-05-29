@@ -172,5 +172,48 @@ const Stake: React.FC = () => {
   );
 };
 
+
+
+    // const getDefaultRandomNumberOccurences = ()=>{
+    //     let oc: RandomNuberOccurrences[] = [];
+    //     Array.from({ length: 37 }, (value, index) => index)
+    //         .map(x=> {
+    //             oc.push({randomNumer: x, occurrence: 0})
+    //         });
+
+    //         console.log(oc);
+            
+    //     return oc;
+    // }
+
+    // const [randomNumberOccurrences, setRandomNumberOccurrences] = useState<RandomNuberOccurrences[]>([]);
+
+    
+    // const resetRandomNumberOccurrences = () => {
+
+    //     Array.from({ length: 37 }, (value, index) => index)
+    //     .map(x=> {
+    //         let indexR = randomNumberOccurrences.findIndex(y=> y.randomNumber === x);
+    //         if(indexR === -1){
+    //             randomNumberOccurrences.push({randomNumber: x, occurrence: 0})
+    //         }
+    //     });
+
+
+    //     generatedRandomNumbers.forEach(x=>{
+    //         let index = randomNumberOccurrences.findIndex(y=> y.randomNumber === x);
+    //         if(index >=0)
+    //         randomNumberOccurrences[index].occurrence += 1;
+    //     else{
+    //         randomNumberOccurrences.push({randomNumber: x, occurrence: 1})
+    //     }
+    //     });
+
+    //     setRandomNumberOccurrences(randomNumberOccurrences.sort((a,b)=> a.occurrence-b.occurrence));
+
+    //     console.log('randomNumberOccurrences: ',randomNumberOccurrences);
+    //     console.log('generatedRandomNumbers: ',generatedRandomNumbers);
+    // }
+
 export default Stake;
 

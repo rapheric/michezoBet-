@@ -1,11 +1,8 @@
 import React from 'react'
 import styled from '@emotion/styled'
 
-interface Options{
-  selectedOption:string|null;
-}
 
-const Stats: React.FC <Options> = ({selectedOption}) => {
+const Stats: React.FC  = () => {
   return (
     <StyledEvent>
         <p>Event #498</p>
